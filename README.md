@@ -32,8 +32,6 @@ SaaS version means you are using the service provided by Kai with cloud service.
 ```js
 if (this.credentials.organizationId && this.credentials.instanceId && this.credentials.apiKey) {
     headers = {
-        'organization-id': this.credentials.organizationId,
-        'instance-id': this.credentials.instanceId,
         'api-key': this.credentials.apiKey
     }
 
@@ -54,34 +52,68 @@ if (this.credentials.host) {
 ```
 ---
 
-There are 6 modules in the SDK:
+There are 5 modules in the SDK:
 
-| [File Management](#file-management) | [Audit](#audit) | [ManageInstance](#manageinstance) | [Thematic](#thematic) | [SemanticGraph](#semanticgraph) | [Search](#search) |
+| [Core](#core) | [Audit](#audit) | [ManageInstance](#manageinstance) | [SemanticGraph](#semanticgraph) | [Search](#search) |
 
+### Core
+[Core.ts](modules/Core.ts) provides methods for quering the status of documents.
+- countDocuments : get number of documents analyzed
+- countDetectedDocuments : get number of detected documents
+- countIndexableDocuments : get number of indexable document
+- countIndexedDocuments : get number of indexed documents
+- downloadFile : download file
+    >id: document id
+- indexNewOrUpdatedDocument : index only new/updated/removed documents
+- getAllScenarios : List all available scenarios with theirs API signatures
+- getLogs : Get KAI Semantic layer logs
+    
+    log types: LLM error 500, LLM error 503, LLM Limitation rate, Application information, Excel parser error, Ppt Parser error, Word Parser error, Image Parser error, PDF Parser Error, Markdown Parser Error, Html Parser Error
+    >type: `type of log you want (like'Application information'), dont add if you want to get back all logs`
+    
+    >skip: 'pagination skip elements'
 
-
-### File Management
-[FileInstance.ts](modules/FileInstance.ts) provides methods for file management.
-- listFiles
-- downloadFile
-- uploadFiles
-- removeFile
+    >take: 'pagination take elements'
+- reinitAll : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size of databases connected to KAI
 
 For example:
 ```js
-let fileInstance = kaiStudio.fileInstance()
-fileInstance.listFiles().then(response => {
-    console.log("LIST FILES:")
+let core = kaiStudio.core()
+core.countDocuments().then(response => {
+    console.log("COUNT DOCUMENTS:")
     console.log(response)
 })
 ```
 
 ### Audit
 [KMAudit.ts](modules/KMAudit.ts) provides methods for auditing files.
-- getConflictInformation
-- getDuplicatedInformation
-- setConflictManaged
-- setDuplicatedInformationManaged
+- getConflictInformation : get back conflict information
+    >limit: 'number of content to return'
+
+    >offset: 'number of content to skip before starting to collect the result set'
+- getDuplicatedInformation : get back duplicated information
+    >limit: 'number of content to return',
+
+    >offset: 'number of content to skip before starting to collect the result set'
+
+- setConflictManaged : set the state to managed for a conflict information
+    >id: 'id of the conflict information to set managed'
+
+- setDuplicatedInformationManaged : set the state to managed for a duplicated information
+    >id: 'id of the duplicated information to set managed'
+
+- getDocumentsToManageList : list of all documents who contain conflict or duplicated information
+    >limit: "number of content to skip before starting to collect the result set (default 20)"
+
+    >offset: "number of content to return (default 0)"
+
+- getMissingSubjectList : List all missing subjects following user queries
+    >limit: "number of content to skip before starting to collect the result set (default 20)"
+
+    >offset: "number of content to return (default 0)"
+
+- getAllTasksLinkedToDocument : Get back all tasks linked to a document
+    >id: "Id of the document"
 
 For example:
 ```js
@@ -93,16 +125,9 @@ auditInstance.getConflictInformation(10,0).then(response => {
 ```
 ### ManageInstance
 [ManageInstance.ts](modules/ManageInstance.ts) provides methods for managing instance.
-- getGlobalHealth
-- isApiAlive
-- generateNewApiKey
-- updateName
-- deploy
-- delete
-- addKb
-- setPlayground
-- updateKb
-- removeKb
+- getGlobalHealth : get global health
+- isApiAlive : check if api is alive
+- getVersion : get version
 
 For example:
 ```js
@@ -113,64 +138,59 @@ manageInstance.getGlobalHealth().then(response => {
 })
 ```
 
-### Thematic
-[Thematic.ts](modules/Thematic.ts) provides methods for managing thematic content.
-- getTopic
-- getKbs
-- getDocuments
-- addAuditQuestion
-- updateAuditQuestion
-- listAuditQuestions
-- getTestRunningState
-- runTest
-- listTopics
-- getSubtopic
-- countTopics
-- countSubtopics
-- countDocuments
-- countAuditQuestions
-- countValidatedAuditQuestions
+### Search
+[Search.ts](modules/Search.ts) provides methods for searching.
+- query : Make a search on the semantic index
+    >query: 'query to search on the semantic index'
 
-For example:
+    >user: '(optional) user identifier to log for this query'
+
+    >impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager or Sales man'
+
+    >multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document'
+    
+    >needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
+
+- getDocSignature : get back a document signature
+    >id: 'id of the document to get signature'
+
+- getDocsIds : get back identified documents signature
+    >docsIds: 'all docs ids'
+
+- countDoneRequests : count number of call on search (/query) endpoint
+- countAnsweredDoneRequests : count number of call on search (/query) endpoint where KAI find an answer
+- listQuestionsAsked : get back requests made to the API
+    >limit: 'number of content to return'
+                    
+    >offset: 'number of content to skip before starting to collect the result set'
+- identifySpecificDocument : identify a concise question following the user needs and documents from knowledge base
+    >conversation:`an array on a conversation of the user and the assistant, each row of the array follow the structure { from: 'user' | 'assistant', message: string }`
+
 ```js
-let thematic = kaiStudio.thematic()
-thematic.getKbs().then(response => {
-    console.log("GET knowledge bases:")
+let search = kaiStudio.search()
+search.query("what is the history of France TV?", "userid", "", false, true).then(response => {
+    console.log("SEARCH QUERY:")
     console.log(response)
 })
 ```
 
 ### SemanticGraph
 [SemanticGraph.ts](modules/SemanticGraph.ts) provides methods for managing semantic graph.
-- getNodes
-- getLinkedNodes
-- getNodeByLabel
-- detectApproximalNodes
+- getNodes : list all generated semantic nodes
+    >limit: 'limit of elements returned'
+    >offset: 'begin listing with this offset'
+- getLinkedNodes : get all linked nodes of one selected node
+    >id: 'Id of the reference node'
+- getNodeByLabel : Get all nodes who is involved by the label tag
+    >label: 'Label tag'
+- detectApproximalNodes : Identify nodes who can be used to defined the semaantic context of the query
+    >query: 'query searched'
 
 For example:
 ```js
 let semantic = kaiStudio.semanticGraph()
 semantic.getNodes(10,0).then(response => {
     console.log("GET NODES:")
-    console.log(response)
-})
-```
-
-### Search
-[Search.ts](modules/Search.ts) provides methods for searching.
-- search
-- getRelatedDocuments
-- countAnalyzedDocuments
-- getDocSignature
-- getDocsIds
-- countDoneRequests
-- countAnsweredDoneRequests
-- generateFollowingQuestion
-- listQuestionsAsked
-```js
-let search = kaiStudio.search()
-search.query("what is the history of France TV?", "userid").then(response => {
-    console.log("SEARCH QUERY:")
     console.log(response)
 })
 ```

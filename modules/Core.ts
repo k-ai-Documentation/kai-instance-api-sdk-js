@@ -62,4 +62,73 @@ export class Core {
         }
     }
 
+    public async downloadFile(fileId: string): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/download-file/?id=${fileId}`,
+                method: 'GET',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
+
+    public async indexNewOrUpdatedDocument(file: any): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/differential-indexation`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
+
+    public async getAllScenarios(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/scenarios`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
+
+    public async getLogs(type: any, skip: number, take: number): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/logs`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    type: type,
+                    skip: skip,
+                    take: take
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
+
+    public async reinitAll(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/reinit-all`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
 }

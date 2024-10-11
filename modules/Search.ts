@@ -53,19 +53,6 @@ export class Search {
         }
     }
 
-    public async countAnalyzedDocuments(): Promise<number> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/thematic/stats/count-documents`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
     public async getDocSignature(docId: string): Promise<any> {
         try {
             const request = await axios({
@@ -148,18 +135,4 @@ export class Search {
             throw e
         }
     }
-
-    public async getVersion(): Promise<SearchLog[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}/version`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data
-        } catch (e) {
-            throw e
-        }
-    }
-
 }
