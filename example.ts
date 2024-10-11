@@ -63,13 +63,8 @@ manageInstance.isApiAlive().then(response => {
     console.log(response)
 })
 
-search.query("what is the history of France TV?", "userid").then(response => {
+search.query("what is the history of France TV?", "userid", "", false, false).then(response => {
     console.log("SEARCH QUERY:")
-    console.log(response)
-})
-
-search.getRelatedDocuments("TV?").then(response => {
-    console.log("GET RELATED DOCUMENTS:")
     console.log(response)
 })
 

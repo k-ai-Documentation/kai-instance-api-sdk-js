@@ -35,7 +35,7 @@ export class KaiStudio {
                 'api-key': this.credentials.apiKey
             }
 
-            baseUrl = `https://${this.credentials.organizationId}.kai-studio.ai/${this.credentials.instanceId}/`
+            baseUrl = `https://api.kai-studio.ai/`
         }
 
         if (this.credentials.host) {
