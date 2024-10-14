@@ -7,6 +7,7 @@ export class ManageInstance {
 
     constructor(headers: object, credentials: any) {
         this.headers = headers
+        this.baseUrl = ""
         if(credentials && credentials.organizationId && credentials.instanceId) {
             this.baseUrl = `https://${credentials.organizationId}.kai-studio.ai/${credentials.instanceId}/`
         }
