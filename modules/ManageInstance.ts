@@ -5,9 +5,9 @@ export class ManageInstance {
     private readonly headers: object;
     private readonly baseUrl: string;
 
-    constructor(headers: object, baseUrl: string) {
+    constructor(headers: object) {
         this.headers = headers
-        this.baseUrl = baseUrl
+        this.baseUrl = `https://${this.headers['organization-id']}.kai-studio.ai/${this.headers['instance-id']}/`
     }
 
     public async getGlobalHealth(): Promise<any> {

@@ -49,7 +49,7 @@ export class KaiStudio {
         this._search = new Search(headers, baseUrl)
         this._auditInstance = new KMAudit(headers, baseUrl)
         this._semanticGraph = new SemanticGraph(headers, baseUrl)
-        this._manageInstance = new ManageInstance(headers, baseUrl)
+        this._manageInstance = new ManageInstance(headers)
         this._fileInstance = new FileInstance(headers)
         this._core = new Core(headers, baseUrl)
     }
