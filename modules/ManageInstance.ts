@@ -14,7 +14,7 @@ export class ManageInstance {
         try {
             const request = await axios({
                 url: `${this.baseUrl}/global-health`,
-                method: 'GET',
+                method: 'POST',
                 headers: this.headers
             })
             return request.data
@@ -27,7 +27,7 @@ export class ManageInstance {
         try {
             const request = await axios({
                 url: `${this.baseUrl}/health`,
-                method: 'GET',
+                method: 'POST',
                 headers: this.headers
             })
             return request.data
