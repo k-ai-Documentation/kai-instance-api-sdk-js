@@ -5,18 +5,15 @@ export class ManageInstance {
     private readonly headers: object;
     private readonly baseUrl: string;
 
-    constructor(headers: object, credentials: any) {
+    constructor(headers: object) {
         this.headers = headers
-        this.baseUrl = ""
-        if(credentials && credentials.organizationId && credentials.instanceId) {
-            this.baseUrl = `https://${credentials.organizationId}.kai-studio.ai/${credentials.instanceId}/`
-        }
+        this.baseUrl = "https://api.kai-studio.ai"
     }
 
     public async getGlobalHealth(): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}global/health`,
+                url: `${this.baseUrl}/global-health`,
                 method: 'GET',
                 headers: this.headers
             })
@@ -29,7 +26,7 @@ export class ManageInstance {
     public async isApiAlive(): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}health`,
+                url: `${this.baseUrl}/health`,
                 method: 'GET',
                 headers: this.headers
             })
