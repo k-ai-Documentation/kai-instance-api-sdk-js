@@ -23,6 +23,11 @@ export interface SearchResult {
     followingQuestions: string[]
 }
 
+export interface IdentifySpecificDocument {
+    isFinal: boolean,
+    question: string
+}
+
 export class Search {
 
     private readonly headers: object;
@@ -125,7 +130,7 @@ export class Search {
         }
     }
 
-    public async identifySpecificDocument(conversation: any): Promise<SearchLog[]> {
+    public async identifySpecificDocument(conversation: any): Promise<IdentifySpecificDocument> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/search/identify-specific-document`,
@@ -133,7 +138,7 @@ export class Search {
                 headers: this.headers,
                 data: {"conversation": conversation}
             })
-            return request.data
+            return request.data.response
         } catch (e) {
             throw e
         }
