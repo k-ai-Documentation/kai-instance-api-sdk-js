@@ -151,20 +151,4 @@ export class KMAudit {
             throw e
         }
     }
-
-    public async getAllTasksLinkedToDocument(id: string): Promise<Task[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/document/tasks`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    id: id
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
 }

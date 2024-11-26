@@ -56,16 +56,6 @@ core.getAllScenarios().then((response) => {
     console.log(response);
 });
 
-core.getLogs('yourTypeLog', 0, 20).then((response) => {
-    console.log('GET LOGS:');
-    console.log(response);
-});
-
-core.reinitAll().then((response) => {
-    console.log('REINIT ALL:');
-    console.log(response);
-});
-
 auditInstance.getConflictInformation(20, 0).then((response) => {
     console.log('GET CONFLICT INFORMATION:');
     console.log(response);
@@ -96,11 +86,6 @@ auditInstance.getMissingSubjectList(20, 0).then((response) => {
     console.log(response);
 })
 
-auditInstance.getAllTasksLinkedToDocument('documentId').then((response) => {
-    console.log('GET ALL TASKS LINKED TO DOCUMENT:');
-    console.log(response);
-})
-
 manageInstance.getGlobalHealth().then((response) => {
     console.log('GET GLOBAL HEALTH:');
     console.log(response);
@@ -108,11 +93,6 @@ manageInstance.getGlobalHealth().then((response) => {
 
 manageInstance.isApiAlive().then((response) => {
     console.log('IS API ALIVE:');
-    console.log(response);
-});
-
-manageInstance.getVersion().then((response) => {
-    console.log('GET VERSION:');
     console.log(response);
 });
 

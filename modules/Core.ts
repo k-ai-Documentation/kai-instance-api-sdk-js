@@ -65,9 +65,12 @@ export class Core {
     public async downloadFile(fileId: string): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/download-file/?id=${fileId}`,
-                method: 'GET',
-                headers: this.headers
+                url: `${this.baseUrl}api/orchestrator/files/download`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    id: fileId
+                }
             })
             return request.data.response
         } catch (e) {
@@ -101,30 +104,16 @@ export class Core {
         }
     }
 
-    public async getLogs(type: any, skip: number, take: number): Promise<any> {
+    public async listDocs(limit: number, offset: number): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/logs`,
+                url: `${this.baseUrl}api/orchestrator/list-docs`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    type: type,
-                    skip: skip,
-                    take: take
+                    limit: limit,
+                    offset: offset
                 }
-            })
-            return request.data.response
-        } catch (e) {
-            return null
-        }
-    }
-
-    public async reinitAll(): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/reinit-all`,
-                method: 'POST',
-                headers: this.headers
             })
             return request.data.response
         } catch (e) {

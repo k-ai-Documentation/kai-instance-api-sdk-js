@@ -56,9 +56,12 @@ export class Search {
     public async getDocSignature(docId: string): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/search/doc/${docId}`,
+                url: `${this.baseUrl}api/search/doc`,
                 method: 'POST',
-                headers: this.headers
+                headers: this.headers,
+                data: {
+                    id: docId
+                }
             })
             return request.data.response
         } catch (e) {
