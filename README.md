@@ -66,7 +66,6 @@ There are 5 modules in the SDK:
     >id: document id
 - indexNewOrUpdatedDocument : index only new/updated/removed documents
 - getAllScenarios : List all available scenarios with theirs API signatures
-- getLogs : Get KAI Semantic layer logs
     
     log types: LLM error 500, LLM error 503, LLM Limitation rate, Application information, Excel parser error, Ppt Parser error, Word Parser error, Image Parser error, PDF Parser Error, Markdown Parser Error, Html Parser Error
     >type: `type of log you want (like'Application information'), dont add if you want to get back all logs`
@@ -74,7 +73,6 @@ There are 5 modules in the SDK:
     >skip: 'pagination skip elements'
 
     >take: 'pagination take elements'
-- reinitAll : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size of databases connected to KAI
 
 For example:
 ```js
@@ -112,8 +110,6 @@ core.countDocuments().then(response => {
 
     >offset: "number of content to return (default 0)"
 
-- getAllTasksLinkedToDocument : Get back all tasks linked to a document
-    >id: "Id of the document"
 
 For example:
 ```js
@@ -127,7 +123,6 @@ auditInstance.getConflictInformation(10,0).then(response => {
 [ManageInstance.ts](modules/ManageInstance.ts) provides methods for managing instance.
 - getGlobalHealth : get global health
 - isApiAlive : check if api is alive
-- getVersion : get version
 
 For example:
 ```js
