@@ -143,4 +143,17 @@ export class Search {
             throw e
         }
     }
+
+    public async getVersion(): Promise<string> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}version`,
+                method: 'GET',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
