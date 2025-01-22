@@ -12,7 +12,7 @@ export class Credentials implements KaiStudioCredentials {
     }
 }
 
-let credentials = new Credentials('organization id', 'instance id', 'api key');
+let credentials = new Credentials('aze49ItXnB9DljpNU0hZkNY3JBcO/+wWd970Jxh1Em8=', '7ed503a5-6f2a-45c9-adc3-0a71283d6992', 'rfOmI3Rgery59/qv6KflSoTG2BJe56+nq8PuRS2ezqU=');
 
 let kaiStudio = new KaiStudio(credentials);
 let core = kaiStudio.core();
@@ -56,6 +56,11 @@ core.getAllScenarios().then((response) => {
     console.log(response);
 });
 
+core.lastIndexationTime().then((response) => {
+    console.log('LAST INDEXATION TIME:');
+    console.log(response);
+});
+
 auditInstance.getConflictInformation(20, 0).then((response) => {
     console.log('GET CONFLICT INFORMATION:');
     console.log(response);
@@ -83,6 +88,21 @@ auditInstance.getDocumentsToManageList(20, 0).then((response) => {
 
 auditInstance.getMissingSubjectList(20, 0).then((response) => {
     console.log('GET MISSING SUBJECT LIST:');
+    console.log(response);
+})
+
+auditInstance.countMissingSubjects().then((response) => {
+    console.log('COUNT MISSING SUBJECTS:');
+    console.log(response);
+});
+
+auditInstance.countDuplicatedInformation().then((response) => {
+    console.log('COUNT DUPLICATED INFORMATION:');
+    console.log(response);
+});
+
+auditInstance.countConflictInformation().then((response) => {
+    console.log('COUNT CONFLICT INFORMATION:');
     console.log(response);
 })
 

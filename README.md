@@ -73,6 +73,7 @@ There are 5 modules in the SDK:
     >skip: 'pagination skip elements'
 
     >take: 'pagination take elements'
+- lastIndexationTime: get last indexation time
 
 For example:
 ```js
@@ -110,6 +111,12 @@ core.countDocuments().then(response => {
 
     >offset: "number of content to return (default 0)"
 
+- countMissingSubject : count number of missing subjects following user queries
+
+- countConflictInformation : count number of conflict information
+
+- countDuplicatedInformation : count number of duplicated information
+
 
 For example:
 ```js
@@ -140,7 +147,7 @@ manageInstance.getGlobalHealth().then(response => {
 
     >user: '(optional) user identifier to log for this query'
 
-    >impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager or Sales man'
+    >impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager'
 
     >multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document'
     
