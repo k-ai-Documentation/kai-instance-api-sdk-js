@@ -78,7 +78,7 @@ export class Core {
         }
     }
 
-    public async indexNewOrUpdatedDocument(file: any): Promise<any> {
+    public async indexNewOrUpdatedDocument(): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/differential-indexation`,
