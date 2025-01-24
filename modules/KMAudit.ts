@@ -151,4 +151,43 @@ export class KMAudit {
             throw e
         }
     }
+
+    public async countMissingSubjects(): Promise<number | any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-missing-subjects`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async countDuplicatedInformation(): Promise<number | any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicated-information`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async countConflictInformation(): Promise<number | any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-information`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
