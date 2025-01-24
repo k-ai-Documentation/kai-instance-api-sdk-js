@@ -1,5 +1,4 @@
 import axios from "axios";
-import {ConflictInformation} from "./KMAudit";
 
 export class Chatbot {
     private readonly headers: object;
@@ -10,7 +9,7 @@ export class Chatbot {
         this.baseUrl = baseUrl
     }
 
-    public async getFullConversation(id: string): Promise<ConflictInformation[] | any> {
+    public async getFullConversation(id: string): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/chatbot/get-conversation`,
@@ -26,7 +25,7 @@ export class Chatbot {
         }
     }
 
-    public async conversation(id: string = "", user_message: string, multi_documents: boolean, user_id: string): Promise<ConflictInformation[] | any> {
+    public async conversation(id: string = "", user_message: string, multi_documents: boolean, user_id: string = ""): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/chatbot/message`,

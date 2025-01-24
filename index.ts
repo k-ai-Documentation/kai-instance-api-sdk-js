@@ -4,6 +4,7 @@ import {Search} from "./modules/Search";
 import {KMAudit} from "./modules/KMAudit";
 import {SemanticGraph} from "./modules/SemanticGraph";
 import {Core} from "./modules/Core";
+import {Chatbot} from "./modules/Chatbot";
 
 export interface KaiStudioCredentials {
     organizationId?: any,
@@ -21,6 +22,7 @@ export class KaiStudio {
     private readonly _auditInstance: KMAudit;
     private readonly _semanticGraph: SemanticGraph;
     private readonly _core: Core;
+    private readonly _chatbot: Chatbot;
 
     constructor(credentials: KaiStudioCredentials) {
         this.credentials = credentials
@@ -52,6 +54,7 @@ export class KaiStudio {
         this._manageInstance = new ManageInstance(headers)
         this._fileInstance = new FileInstance(headers)
         this._core = new Core(headers, baseUrl)
+        this._chatbot = new Chatbot(headers, baseUrl)
     }
 
     public getCredentials(): KaiStudioCredentials {
@@ -80,6 +83,10 @@ export class KaiStudio {
 
     public core(): Core {
         return this._core
+    }
+
+    public chatbot(): Chatbot {
+        return this._chatbot
     }
 }
 

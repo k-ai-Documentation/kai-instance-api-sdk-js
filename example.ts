@@ -46,7 +46,7 @@ core.downloadFile('Azure Blob Storage::{{blob storage id}}::Contacter FranceTV.d
     console.log(response);
 });
 
-core.indexNewOrUpdatedDocument('').then((response) => {
+core.indexNewOrUpdatedDocument().then((response) => {
     console.log('INDEX NEW OR UPDATED DOCUMENT:');
     console.log(response);
 });
