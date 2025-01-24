@@ -124,7 +124,7 @@ export class Core {
     public async lastIndexationTime(): Promise<any> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/last-indexation`,
+                url: `${this.baseUrl}api/orchestrator/last-indexation`,
                 method: 'POST',
                 headers: this.headers
             })
