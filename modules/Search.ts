@@ -156,4 +156,21 @@ export class Search {
             throw e
         }
     }
+
+    public async countSearchNumberByDate(beginDate: string, endDate: string) :Promise<{ [key: string]: number }>{
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/search/count-search-by-date`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    "beginDate": beginDate,
+                    "endDate": endDate
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
