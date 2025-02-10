@@ -61,6 +61,11 @@ core.lastIndexationTime().then((response) => {
     console.log(response);
 });
 
+core.listIndexedDocuments(20, 0).then((response) => {
+    console.log('LIST INDEXED DOCUMENTS:');
+    console.log(response);
+});
+
 auditInstance.getConflictInformation(20, 0).then((response) => {
     console.log('GET CONFLICT INFORMATION:');
     console.log(response);
@@ -103,6 +108,11 @@ auditInstance.countDuplicatedInformation().then((response) => {
 
 auditInstance.countConflictInformation().then((response) => {
     console.log('COUNT CONFLICT INFORMATION:');
+    console.log(response);
+})
+
+auditInstance.getAnomaliesForDoc("docId").then((response) => {
+    console.log('GET ANOMALIES FOR DOC:');
     console.log(response);
 })
 

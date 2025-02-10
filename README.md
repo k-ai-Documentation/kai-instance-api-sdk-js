@@ -96,6 +96,10 @@ There are 5 modules in the SDK:
 
   > take: 'pagination take elements'
 - lastIndexationTime: get last indexation time
+- listIndexedDocuments : list indexed documents
+  > limit: 'number of content to return'
+
+  > offset: 'number of content to skip before starting to collect the result set'
 
 For example:
 
@@ -141,6 +145,9 @@ core.countDocuments().then(response => {
 - countConflictInformation : count number of conflict information
 
 - countDuplicatedInformation : count number of duplicated information
+
+- getAnomaliesForDoc : get anomalies (confilct and duplicated information) for a document
+  > docId: 'id of the document to get anomalies'
 
 For example:
 

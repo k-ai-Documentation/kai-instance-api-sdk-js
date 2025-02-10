@@ -133,4 +133,21 @@ export class Core {
             return null
         }
     }
+
+    public async listIndexedDocuments(limit: number, offset: number): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/list-indexed-documents`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    limit: limit,
+                    offset: offset
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
 }

@@ -190,4 +190,20 @@ export class KMAudit {
             throw e
         }
     }
+
+    public async getAnomaliesForDoc(docId: string): Promise<Document[] | any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-anomalies-for-document`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    docId: docId
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
