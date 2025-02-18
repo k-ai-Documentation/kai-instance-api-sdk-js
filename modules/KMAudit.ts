@@ -239,4 +239,5 @@ export class KMAudit {
         } catch (e) {
             throw e
         }
+    }
 }
