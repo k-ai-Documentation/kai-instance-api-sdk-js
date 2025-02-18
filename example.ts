@@ -116,6 +116,16 @@ auditInstance.getAnomaliesForDoc("docId").then((response) => {
     console.log(response);
 })
 
+auditInstance.conflictInformationSetState("docId", "managed").then((response) => {
+    console.log('CONFLICT INFORMATION SET STATE:');
+    console.log(response);
+})
+
+auditInstance.duplicatedInformationSetState("docId", "ignored").then((response) => {
+    console.log('DUPLICATED INFORMATION SET STATE:');
+    console.log(response);
+})
+
 manageInstance.getGlobalHealth().then((response) => {
     console.log('GET GLOBAL HEALTH:');
     console.log(response);

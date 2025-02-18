@@ -149,6 +149,16 @@ core.countDocuments().then(response => {
 - getAnomaliesForDoc : get anomalies (confilct and duplicated information) for a document
   > docId: 'id of the document to get anomalies'
 
+- conflictInformationSetState : set the state of conflict information like 'managed' or 'ignored'
+  > id: 'id of the conflict information to set state'
+
+  > state: 'state to set to the conflict information'
+
+- duplicatedInformationSetState : set the state of duplicated information like 'managed' or 'ignored'
+  > id: 'id of the duplicated information to set state'
+
+  > state: 'state to set to the duplicated information' 
+
 For example:
 
 ```js

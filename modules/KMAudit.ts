@@ -206,4 +206,37 @@ export class KMAudit {
             throw e
         }
     }
+
+    public async conflictInformationSetState(id: string, state: string): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/conflict-information/set-state`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    id: id,
+                    state: state
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async duplicatedInformationSetState(id: string, state: string): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/duplicated-information/set-state`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    id: id,
+                    state: state
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
 }
