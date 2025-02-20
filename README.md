@@ -83,6 +83,7 @@ There are 5 modules in the SDK:
 - countDetectedDocuments : get number of detected documents
 - countIndexableDocuments : get number of indexable document
 - countIndexedDocuments : get number of indexed documents
+- listDocs : list documents
 - downloadFile : download file
   > id: document id
 - indexNewOrUpdatedDocument : index only new/updated/removed documents

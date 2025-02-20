@@ -41,6 +41,11 @@ core.countIndexedDocuments().then((response) => {
     console.log(response);
 })
 
+core.listDocs(20,0).then((response) => {
+    console.log('LIST DOCS:');
+    console.log(response);
+})
+
 core.downloadFile('Azure Blob Storage::{{blob storage id}}::Contacter FranceTV.docx').then((response) => {
     console.log('DOWNLOAD FILE:');
     console.log(response);
