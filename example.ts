@@ -56,10 +56,15 @@ core.getAllScenarios().then((response) => {
     console.log(response);
 });
 
-core.lastIndexationTime().then((response) => {
-    console.log('LAST INDEXATION TIME:');
+core.lastIndexationBeginTime().then((response) => {
+    console.log('LAST INDEXATION BEGIN TIME:');
     console.log(response);
 });
+
+core.lastIndexationEndTime().then((response) => {
+    console.log('LAST INDEXATION END TIME:');
+    console.log(response);
+})
 
 core.listIndexedDocuments(20, 0).then((response) => {
     console.log('LIST INDEXED DOCUMENTS:');

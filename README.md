@@ -95,7 +95,8 @@ There are 5 modules in the SDK:
   > skip: 'pagination skip elements'
 
   > take: 'pagination take elements'
-- lastIndexationTime: get last indexation time
+- lastIndexationBeginTime: get last indexation begin time
+- lastIndexationEndTime: get last indexation end time
 - listIndexedDocuments : list indexed documents
   > limit: 'number of content to return'
 

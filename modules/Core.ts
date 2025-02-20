@@ -121,10 +121,23 @@ export class Core {
         }
     }
 
-    public async lastIndexationTime(): Promise<any> {
+    public async lastIndexationBeginTime(): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/last-indexation`,
+                method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            return null
+        }
+    }
+
+    public async lastIndexationEndTime(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/last-finished-indexation`,
                 method: 'POST',
                 headers: this.headers
             })
