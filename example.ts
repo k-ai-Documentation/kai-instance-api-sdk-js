@@ -41,6 +41,11 @@ core.countIndexedDocuments().then((response) => {
     console.log(response);
 })
 
+core.countInProgressIndexationDocuments().then((response) => {
+    console.log('COUNT IN PROGRESS INDEXATION DOCUMENTS:');
+    console.log(response);
+})
+
 core.listDocs(20,0).then((response) => {
     console.log('LIST DOCS:');
     console.log(response);

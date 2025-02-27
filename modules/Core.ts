@@ -91,6 +91,24 @@ export class Core {
     }
 
     /**
+     * Counts the number of in progress indexation documents.
+     * 
+     * @returns {Promise<any>} The number of in progress indexation documents or null if the request fails.
+     */
+        public async countInProgressIndexationDocuments(): Promise<any> {
+            try {
+                const request = await axios({
+                    url: `${this.baseUrl}api/orchestrator/count-inprogress-indexation-documents`,
+                    method: 'POST',
+                    headers: this.headers,
+                });
+                return request.data.response;
+            } catch (e) {
+                return null;
+            }
+        }
+
+    /**
      * Downloads a file by its document ID.
      *
      * @param {string} fileId - The ID of the document to download.
