@@ -98,7 +98,7 @@ export class Core {
         public async countInProgressIndexationDocuments(): Promise<any> {
             try {
                 const request = await axios({
-                    url: `${this.baseUrl}api/orchestrator/count-inprogress-indexation-documents`,
+                    url: `${this.baseUrl}api/orchestrator/stats/count-inprogress-indexation-documents`,
                     method: 'POST',
                     headers: this.headers,
                 });
