@@ -20,7 +20,7 @@ export class SemanticGraph {
 
     /**
      * Retrieve a list of nodes from the semantic graph.
-     * @param {number} limit - The maximum number of nodes to retrieve.
+     * @param {number} limit - The maximum number of nodes to retrieve. Maximum is 50.
      * @param {number} offset - The number of nodes to skip before collecting results.
      * @returns {Promise<any>} - A promise that resolves with the nodes data.
      */
