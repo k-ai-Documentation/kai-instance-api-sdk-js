@@ -253,9 +253,9 @@ export class Core {
     /**
      * Check if instance has job in progress
      *
-     * @returns {Promise<boolean>} A list of indexed documents or null if the request fails.
+     * @returns {Promise<any>} A list of indexed documents or null if the request fails.
      */
-    public async checkPendingIndexation(): Promise<boolean> {
+    public async checkPendingIndexation(): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/check-pending-indexation`,
