@@ -92,7 +92,7 @@ export class Core {
 
     /**
      * Counts the number of in progress indexation documents.
-     * 
+     *
      * @returns {Promise<any>} The number of in progress indexation documents or null if the request fails.
      */
         public async countInProgressIndexationDocuments(): Promise<any> {
@@ -243,6 +243,24 @@ export class Core {
                     limit: limit,
                     offset: offset,
                 },
+            });
+            return request.data.response;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Check if instance has job in progress
+     *
+     * @returns {Promise<boolean>} A list of indexed documents or null if the request fails.
+     */
+    public async checkPendingIndexation(): Promise<boolean> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/check-pending-indexation`,
+                method: 'POST',
+                headers: this.headers
             });
             return request.data.response;
         } catch (e) {
