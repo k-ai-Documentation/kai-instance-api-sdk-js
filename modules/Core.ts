@@ -264,7 +264,7 @@ export class Core {
             });
             return request.data.response;
         } catch (e) {
-            return null;
+            return false;
         }
     }
 }
