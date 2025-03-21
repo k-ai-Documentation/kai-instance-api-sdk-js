@@ -267,4 +267,17 @@ export class Core {
             return false;
         }
     }
+
+    public async checkPendingJob(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/check-pending-job`,
+                method: 'POST',
+                headers: this.headers
+            });
+            return request.data.response;
+        } catch (e) {
+            return false;
+        }
+    }
 }
