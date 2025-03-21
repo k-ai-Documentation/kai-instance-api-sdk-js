@@ -103,6 +103,7 @@ There are 5 modules in the SDK:
   > limit: 'number of content to return'
 
   > offset: 'number of content to skip before starting to collect the result set'
+- checkPendingJob : Check if instance has job in progress and its status
 
 For example:
 
@@ -165,7 +166,7 @@ core.countDocuments().then(response => {
 - duplicatedInformationSetState : set the state of duplicated information like 'managed' or 'ignored'
   > id: 'id of the duplicated information to set state'
 
-  > state: 'state to set to the duplicated information' 
+  > state: 'state to set to the duplicated information'
 
 For example:
 
