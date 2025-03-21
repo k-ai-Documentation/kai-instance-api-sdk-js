@@ -108,9 +108,10 @@ export class KMAudit {
      *
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
+     * @param {string} query - Query string
      * @returns {Promise<DuplicateInformation[]>} A list of duplicated information.
      */
-    public async getDuplicatedInformation(limit: number, offset: number): Promise<DuplicateInformation[] | any> {
+    public async getDuplicatedInformation(limit: number, offset: number, query: string = ''): Promise<DuplicateInformation[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/duplicated-information`,
@@ -118,7 +119,8 @@ export class KMAudit {
                 headers: this.headers,
                 data: {
                     offset: offset,
-                    limit: limit
+                    limit: limit,
+                    query: query
                 }
             })
             return request.data.response
