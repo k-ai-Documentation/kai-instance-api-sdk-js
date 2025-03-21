@@ -122,10 +122,15 @@ core.countDocuments().then(response => {
   > limit: 'number of content to return'
 
   > offset: 'number of content to skip before starting to collect the result set'
+
+  > query: 'query string'
+
 - getDuplicatedInformation : get back duplicated information
   > limit: 'number of content to return',
 
   > offset: 'number of content to skip before starting to collect the result set'
+
+  > query: 'query string'
 
 - setConflictManaged : set the state to managed for a conflict information
   > id: 'id of the conflict information to set managed'
