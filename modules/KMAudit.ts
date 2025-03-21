@@ -68,7 +68,7 @@ export class KMAudit {
 
     /**
      * Creates an instance of KMAudit.
-     * 
+     *
      * @param {object} headers - The HTTP headers to include in requests.
      * @param {string} baseUrl - The base URL for the API.
      */
@@ -79,12 +79,13 @@ export class KMAudit {
 
     /**
      * Retrieves conflict information.
-     * 
+     *
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
+     * @param {string} query - Query string
      * @returns {Promise<ConflictInformation[]>} A list of conflict information.
      */
-    public async getConflictInformation(limit: number, offset: number): Promise<ConflictInformation[] | any> {
+    public async getConflictInformation(limit: number, offset: number, query: string = ''): Promise<ConflictInformation[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/conflict-information`,
@@ -92,7 +93,8 @@ export class KMAudit {
                 headers: this.headers,
                 data: {
                     offset: offset,
-                    limit: limit
+                    limit: limit,
+                    query: query
                 }
             })
             return request.data.response
@@ -103,7 +105,7 @@ export class KMAudit {
 
     /**
      * Retrieves duplicated information.
-     * 
+     *
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
      * @returns {Promise<DuplicateInformation[]>} A list of duplicated information.
@@ -127,7 +129,7 @@ export class KMAudit {
 
     /**
      * Marks a conflict as managed.
-     * 
+     *
      * @param {number} id - ID of the conflict to set as managed.
      * @returns {Promise<any>} Response from the server.
      */
@@ -149,7 +151,7 @@ export class KMAudit {
 
     /**
      * Marks a duplicate as managed.
-     * 
+     *
      * @param {number} id - ID of the duplicate to set as managed.
      * @returns {Promise<any>} Response from the server.
      */
@@ -171,7 +173,7 @@ export class KMAudit {
 
     /**
      * Retrieves a list of documents containing conflicts or duplicated information.
-     * 
+     *
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
      * @returns {Promise<Document[]>} A list of documents to manage.
@@ -195,7 +197,7 @@ export class KMAudit {
 
     /**
      * Retrieves a list of missing subjects.
-     * 
+     *
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
      * @returns {Promise<MissingSubject[]>} A list of missing subjects.
@@ -219,7 +221,7 @@ export class KMAudit {
 
     /**
      * Counts the number of missing subjects.
-     * 
+     *
      * @returns {Promise<number>} The total count of missing subjects.
      */
     public async countMissingSubjects(): Promise<number | any> {
@@ -237,7 +239,7 @@ export class KMAudit {
 
     /**
      * Counts the number of duplicated information entries.
-     * 
+     *
      * @returns {Promise<number>} The total count of duplicated information.
      */
     public async countDuplicatedInformation(): Promise<number | any> {
@@ -255,7 +257,7 @@ export class KMAudit {
 
     /**
      * Counts the number of conflict information entries.
-     * 
+     *
      * @returns {Promise<number>} The total count of conflict information.
      */
     public async countConflictInformation(): Promise<number | any> {
@@ -273,7 +275,7 @@ export class KMAudit {
 
     /**
      * Retrieves anomalies (conflicts and duplicates) for a document.
-     * 
+     *
      * @param {string} docId - The ID of the document to get anomalies for.
      * @returns {Promise<Document[]>} A list of anomalies for the document.
      */
@@ -295,7 +297,7 @@ export class KMAudit {
 
     /**
      * Sets the state of a conflict information entry.
-     * 
+     *
      * @param {string} id - The ID of the conflict information.
      * @param {string} state - The state to set (e.g., "managed" or "ignored").
      * @returns {Promise<any>} Response from the server.
@@ -319,7 +321,7 @@ export class KMAudit {
 
     /**
      * Sets the state of a duplicated information entry.
-     * 
+     *
      * @param {string} id - The ID of the duplicated information.
      * @param {string} state - The state to set (e.g., "managed" or "ignored").
      * @returns {Promise<any>} Response from the server.
