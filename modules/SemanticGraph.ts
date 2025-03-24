@@ -86,16 +86,18 @@ export class SemanticGraph {
     /**
      * Identify approximate nodes related to a query.
      * @param {string} query - The query to find approximate nodes.
+     * @param need_documents_content - whether response needs document content
      * @returns {Promise<any>} - A promise that resolves with the detected nodes.
      */
-    public async detectApproximalNodes(query: string): Promise<any> {
+    public async detectApproximalNodes(query: string, need_documents_content: boolean = false): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/semantic-graph/identify-nodes`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    'query': query
+                    'query': query,
+                    'need_documents_content': need_documents_content
                 }
             });
             return request.data.response;
