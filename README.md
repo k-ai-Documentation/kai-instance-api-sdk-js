@@ -247,7 +247,7 @@ search.query("what is the history of France TV?", "userid", "", false, true).the
   > id: 'Id of the reference node'
 - getNodeByLabel : Get all nodes who is involved by the label tag
   > label: 'Label tag'
-- detectApproximalNodes : Identify nodes who can be used to defined the semaantic context of the query
+- detectApproximalNodes : Identify nodes who can be used to define the semantic context of the query
   > query: 'query searched'
   > need_documents_content： 'whether response needs document content' 
 
