@@ -95,18 +95,18 @@ export class Core {
      *
      * @returns {Promise<any>} The number of in progress indexation documents or null if the request fails.
      */
-        public async countInProgressIndexationDocuments(): Promise<any> {
-            try {
-                const request = await axios({
-                    url: `${this.baseUrl}api/orchestrator/stats/count-inprogress-indexation-documents`,
-                    method: 'POST',
-                    headers: this.headers,
-                });
-                return request.data.response;
-            } catch (e) {
-                return null;
-            }
+    public async countInProgressIndexationDocuments(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/stats/count-inprogress-indexation-documents`,
+                method: 'POST',
+                headers: this.headers,
+            });
+            return request.data.response;
+        } catch (e) {
+            return null;
         }
+    }
 
     /**
      * Downloads a file by its document ID.
@@ -253,14 +253,16 @@ export class Core {
     /**
      * Check if instance has job in progress and its status
      *
-     * @returns {Promise<any>} description of pending job
+     * @returns {Promise<any>} description of pending job. Available values :
+        "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
+        "Loading Audit" : "Audit of the indexed documents is pending.
      */
     public async checkPendingJob(): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/check-pending-job`,
                 method: 'POST',
-                headers: this.headers
+                headers: this.headers,
             });
             return request.data.response;
         } catch (e) {

@@ -81,6 +81,11 @@ core.listIndexedDocuments(20, 0).then((response) => {
     console.log(response);
 });
 
+core.checkPendingJob().then((response) => {
+    console.log('CHECK PENDING JOB:');
+    console.log(response);
+});
+
 auditInstance.getConflictInformation(20, 0).then((response) => {
     console.log('GET CONFLICT INFORMATION:');
     console.log(response);

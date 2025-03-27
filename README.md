@@ -103,7 +103,13 @@ There are 5 modules in the SDK:
   > limit: 'number of content to return'
 
   > offset: 'number of content to skip before starting to collect the result set'
-- checkPendingJob : Check if instance has job in progress and its status
+- checkPendingJob : Get the information about your instance background jobs in progress.
+
+    Available values :
+    
+    "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
+
+    "Loading Audit" : "Audit of the indexed documents is pending.
 
 For example:
 
