@@ -86,6 +86,16 @@ core.checkPendingJob().then((response) => {
     console.log(response);
 });
 
+core.getDocSignature('Azure Blob Storage::{{blob storage id}}::Contacter FranceTV.docx').then((response) => {
+    console.log('GET DOC SIGNATURE:');
+    console.log(response);
+});
+
+core.getDocsIds(['Sharepoint::01TE4EPWFLWDMCRPKFM5GZRFYGWEEBX6G2', 'Sharepoint::01TE4EPWEJF5AGPGX7V5FYMYUDPFNFG325']).then((response) => {
+    console.log('GET DOCS BY IDS:');
+    console.log(response);
+});
+
 auditInstance.getConflictInformation(20, 0).then((response) => {
     console.log('GET CONFLICT INFORMATION:');
     console.log(response);
@@ -158,16 +168,6 @@ manageInstance.isApiAlive().then((response) => {
 
 search.query('what is the history of France TV?', 'userid', '', false, false).then((response) => {
     console.log('SEARCH QUERY:');
-    console.log(response);
-});
-
-search.getDocSignature('Azure Blob Storage::{{blob storage id}}::Contacter FranceTV.docx').then((response) => {
-    console.log('GET DOC SIGNATURE:');
-    console.log(response);
-});
-
-search.getDocsIds(['Sharepoint::01TE4EPWFLWDMCRPKFM5GZRFYGWEEBX6G2', 'Sharepoint::01TE4EPWEJF5AGPGX7V5FYMYUDPFNFG325']).then((response) => {
-    console.log('GET DOCS BY IDS:');
     console.log(response);
 });
 

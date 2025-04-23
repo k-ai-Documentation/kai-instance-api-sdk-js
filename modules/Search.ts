@@ -69,44 +69,6 @@ export class Search {
     }
 
     /**
-     * Retrieve the signature of a document.
-     * @param {string[]} docId - ID of the document to get the signature.
-     * @returns A promise resolving to the document signature.
-     */
-    public async getDocSignature(docId: string): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/search/doc`,
-                method: 'POST',
-                headers: this.headers,
-                data: { id: docId }
-            });
-            return request.data.response;
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Retrieve the signatures of multiple identified documents.
-     * @param {string[]} docsIds - An array containing all document IDs.
-     * @returns A promise resolving to an array of document signatures.
-     */
-    public async getDocsIds(docsIds: string[]): Promise<string[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/search/docs`,
-                method: 'POST',
-                headers: this.headers,
-                data: { docsIds }
-            });
-            return request.data.response;
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    /**
      * Count the total number of search queries made.
      * @returns A promise resolving to the total count of search queries.
      */
