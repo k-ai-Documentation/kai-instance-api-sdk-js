@@ -84,7 +84,15 @@ There are 5 modules in the SDK:
 - countIndexableDocuments : get number of indexable document
 - countIndexedDocuments : get number of indexed documents
 - countInProgressIndexationDocuments: get number of in progress indexation documents
-- listDocs : list documents
+- countDocumentsByState : get number of documents by state
+  > state: 'OPTIONAL state of the document you want to get back, if state is not set, number of all docs will be returned', see more: [state document](#state-document)
+- listDocs : list documents with state and pagination
+  > limit: 'number of content to return'
+
+  > offset: 'number of content to skip before starting to collect the result set'
+
+  > state: 'OPTIONAL state of the document you want to get back, if state is not set, all docs will be returned', see more: [state document](#state-document)
+
 - downloadFile : download file
   > id: document id
 - indexNewOrUpdatedDocument : index only new/updated/removed documents
@@ -99,10 +107,6 @@ There are 5 modules in the SDK:
   > take: 'pagination take elements'
 - lastIndexationBeginTime: get last indexation begin time
 - lastIndexationEndTime: get last indexation end time
-- listIndexedDocuments : list indexed documents
-  > limit: 'number of content to return'
-
-  > offset: 'number of content to skip before starting to collect the result set'
 - checkPendingJob : Get the information about your instance background jobs in progress.
 
     Available values :
@@ -290,6 +294,19 @@ chatbot.getFullConversation("abcdedfg").then(response => {
     console.log("FULL CONVERSATION: ")
     console.log(response)
 })
+```
+
+#### state-document 
+We have 6 states for a document:
+
+```ts
+'TYPE_ERROR', // document type is not supported
+'INITIAL_SAVED', // initial save
+"UPDATED", // document is updated (without the content) par rapport à l'API
+'ON_CONTENT_EXTRACT', // document content is currently is working on fileparser
+'CONTENT_EXTRACTED', // document content is fetch from fileparser and chunks is saved
+'ON_INDEXATION', // document is in indexation progress
+'INDEXED' // document is fully indexed
 ```
 
 <u>**For more examples, you can check the [example.ts](example.ts) file.**</u>

@@ -13,6 +13,10 @@ export interface KaiStudioCredentials {
     host?: any
 }
 
+export interface State {
+    state: 'INITIAL_SAVED' | 'UPDATED' | 'ON_CONTENT_EXTRACT' | 'CONTENT_EXTRACTED' | 'ON_INDEXATION' | 'INDEXED';
+}
+
 export class KaiStudio {
 
     private readonly credentials: KaiStudioCredentials;

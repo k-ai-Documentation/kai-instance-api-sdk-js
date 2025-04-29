@@ -12,7 +12,7 @@ export class Credentials implements KaiStudioCredentials {
     }
 }
 
-let credentials = new Credentials('aze49ItXnB9DljpNU0hZkNY3JBcO/+wWd970Jxh1Em8=', '7ed503a5-6f2a-45c9-adc3-0a71283d6992', 'rfOmI3Rgery59/qv6KflSoTG2BJe56+nq8PuRS2ezqU=');
+let credentials = new Credentials('', '', '');
 
 let kaiStudio = new KaiStudio(credentials);
 let core = kaiStudio.core();
@@ -46,7 +46,12 @@ core.countInProgressIndexationDocuments().then((response) => {
     console.log(response);
 })
 
-core.listDocs(20,0).then((response) => {
+core.countDocumentsByState('INDEXED').then((response) => {
+    console.log('COUNT DOCUMENTS BY STATE:');
+    console.log(response);
+})
+
+core.listDocs(20,0, 'CONTENT_EXTRACTED').then((response) => {
     console.log('LIST DOCS:');
     console.log(response);
 })
@@ -75,11 +80,6 @@ core.lastIndexationEndTime().then((response) => {
     console.log('LAST INDEXATION END TIME:');
     console.log(response);
 })
-
-core.listIndexedDocuments(20, 0).then((response) => {
-    console.log('LIST INDEXED DOCUMENTS:');
-    console.log(response);
-});
 
 core.checkPendingJob().then((response) => {
     console.log('CHECK PENDING JOB:');

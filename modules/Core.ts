@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { State } from './../index';
 /**
  * The Core class provides methods for interacting with the Core API.
  */
@@ -25,12 +25,37 @@ export class Core {
      */
     public async countDocuments(): Promise<number> {
         try {
-            const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/count-documents`,
-                method: 'POST',
-                headers: this.headers,
-            });
-            return request.data.response;
+            const allDoc = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': ''
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                });
+            })
+            const errorType = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'TYPE_ERROR'
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                });
+            })
+            return Promise.all([allDoc, errorType]).then((result) => {
+                return result[0] - result[1];
+            })
         } catch (e) {
             return 0;
         }
@@ -44,9 +69,12 @@ export class Core {
     public async countDetectedDocuments(): Promise<number> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/count-detected-documents`,
+                url: `${this.baseUrl}api/core/count-documents-by-state`,
                 method: 'POST',
                 headers: this.headers,
+                data: {
+                    'state': ''
+                }
             });
             return request.data.response;
         } catch (e) {
@@ -61,12 +89,37 @@ export class Core {
      */
     public async countIndexableDocuments(): Promise<number> {
         try {
-            const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/count-indexable-documents`,
-                method: 'POST',
-                headers: this.headers,
-            });
-            return request.data.response;
+            const initialSave = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'INITIAL_SAVE'
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                });
+            })
+            const updated = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'UPDATED'
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                });
+            })
+            return Promise.all([initialSave, updated]).then((result) => {
+                return result[0] + result[1];
+            })
         } catch (e) {
             return 0;
         }
@@ -80,9 +133,12 @@ export class Core {
     public async countIndexedDocuments(): Promise<number> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/count-indexed-documents`,
+                url: `${this.baseUrl}api/core/count-documents-by-state`,
                 method: 'POST',
                 headers: this.headers,
+                data: {
+                    'state': 'INDEXED'
+                }
             });
             return request.data.response;
         } catch (e) {
@@ -97,14 +153,74 @@ export class Core {
      */
     public async countInProgressIndexationDocuments(): Promise<any> {
         try {
+            const onContentExtract = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'ON_CONTENT_EXTRACT'
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) =>{
+                    reject(error);
+                })
+            })
+            const contentExtracted = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'CONTENT_EXTRACTED'
+                    }
+                }).then((response) => {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                })
+            })
+            const onIndexation = new Promise<number>((resolve, reject) => {
+                axios({
+                    url: `${this.baseUrl}api/core/count-documents-by-state`,
+                    method: 'POST',
+                    headers: this.headers,
+                    data: {
+                        'state': 'ON_INDEXATION'
+                    }
+                }).then((response)=> {
+                    resolve(Number(response.data.response));
+                }).catch((error) => {
+                    reject(error);
+                });
+            })
+            return Promise.all([onContentExtract, contentExtracted, onIndexation]).then((result) => {
+                return result[0] + result[1] + result[2];
+            })
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param state - (OPTIONAL) The state of the documents to count. If state is not provided, the method counts all documents.
+     * @returns {Promise<number>} The number of documents in the specified state or 0 if the request fails.
+     */
+    public async countDocumentsByState(state?: State['state']): Promise<number> {
+        try {
             const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/stats/count-inprogress-indexation-documents`,
+                url: `${this.baseUrl}api/core/count-documents-by-state`,
                 method: 'POST',
                 headers: this.headers,
+                data: {
+                    'state': state
+                }
             });
             return request.data.response;
         } catch (e) {
-            return null;
+            return 0;
         }
     }
 
@@ -167,13 +283,14 @@ export class Core {
     }
 
     /**
-     * Lists all documents with pagination.
+     * Lists documents with pagination and state.
      *
      * @param {number} limit - The number of documents to return.
      * @param {number} offset - The number of documents to skip before collecting results.
+     * @param {State} state - (OPTIONAL) The state of the documents to retrieve. If state is not provided, the method retrieves all documents.
      * @returns {Promise<any>} A list of documents or null if the request fails.
      */
-    public async listDocs(limit: number, offset: number): Promise<any> {
+    public async listDocs( limit: number, offset: number, state?: State['state']): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/list-docs`,
@@ -182,6 +299,7 @@ export class Core {
                 data: {
                     limit: limit,
                     offset: offset,
+                    state: state,
                 },
             });
             return request.data.response;
@@ -219,30 +337,6 @@ export class Core {
                 url: `${this.baseUrl}api/orchestrator/last-finished-indexation`,
                 method: 'POST',
                 headers: this.headers,
-            });
-            return request.data.response;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    /**
-     * Lists indexed documents with pagination.
-     *
-     * @param {number} limit - The number of documents to return.
-     * @param {number} offset - The number of documents to skip before collecting results.
-     * @returns {Promise<any>} A list of indexed documents or null if the request fails.
-     */
-    public async listIndexedDocuments(limit: number, offset: number): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/list-indexed-documents`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    limit: limit,
-                    offset: offset,
-                },
             });
             return request.data.response;
         } catch (e) {
