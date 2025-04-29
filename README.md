@@ -297,7 +297,7 @@ chatbot.getFullConversation("abcdedfg").then(response => {
 ```
 
 #### state-document 
-We have 6 states for a document:
+We have 7 states for a document:
 
 ```ts
 'TYPE_ERROR', // document type is not supported
