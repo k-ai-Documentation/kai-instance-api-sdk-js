@@ -14,7 +14,7 @@ export interface KaiStudioCredentials {
 }
 
 export interface State {
-    state: 'INITIAL_SAVED' | 'UPDATED' | 'ON_CONTENT_EXTRACT' | 'CONTENT_EXTRACTED' | 'ON_INDEXATION' | 'INDEXED';
+    state: 'TYPE_ERROR' |'INITIAL_SAVED' | 'UPDATED' | 'ON_CONTENT_EXTRACT' | 'CONTENT_EXTRACTED' | 'ON_INDEXATION' | 'INDEXED';
 }
 
 export class KaiStudio {
