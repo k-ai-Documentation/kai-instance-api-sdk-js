@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { State } from './../index';
+import {State} from './../index';
+
 /**
  * The Core class provides methods for interacting with the Core API.
  */
@@ -79,6 +80,30 @@ export class Core {
             return request.data.response;
         } catch (e) {
             return 0;
+        }
+    }
+
+    /**
+     * Lists indexed documents with pagination.
+     *
+     * @param {number} limit - The number of documents to return.
+     * @param {number} offset - The number of documents to skip before collecting results.
+     * @returns {Promise<any>} A list of indexed documents or null if the request fails.
+     */
+    public async listIndexedDocuments(limit: number, offset: number): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/list-indexed-documents`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    limit: limit,
+                    offset: offset,
+                },
+            });
+            return request.data.response;
+        } catch (e) {
+            return null;
         }
     }
 
@@ -163,7 +188,7 @@ export class Core {
                     }
                 }).then((response) => {
                     resolve(Number(response.data.response));
-                }).catch((error) =>{
+                }).catch((error) => {
                     reject(error);
                 })
             })
@@ -189,7 +214,7 @@ export class Core {
                     data: {
                         'state': 'ON_INDEXATION'
                     }
-                }).then((response)=> {
+                }).then((response) => {
                     resolve(Number(response.data.response));
                 }).catch((error) => {
                     reject(error);
@@ -204,7 +229,7 @@ export class Core {
     }
 
     /**
-     * 
+     *
      * @param state - (OPTIONAL) The state of the documents to count. If state is not provided, the method counts all documents.
      * @returns {Promise<number>} The number of documents in the specified state or 0 if the request fails.
      */
@@ -290,7 +315,7 @@ export class Core {
      * @param {State} state - (OPTIONAL) The state of the documents to retrieve. If state is not provided, the method retrieves all documents.
      * @returns {Promise<any>} A list of documents or null if the request fails.
      */
-    public async listDocs( limit: number, offset: number, state?: State['state']): Promise<any> {
+    public async listDocs(limit: number, offset: number, state?: State['state']): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/list-docs`,
@@ -348,8 +373,8 @@ export class Core {
      * Check if instance has job in progress and its status
      *
      * @returns {Promise<any>} description of pending job. Available values :
-        "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
-        "Loading Audit" : "Audit of the indexed documents is pending.
+     "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
+     "Loading Audit" : "Audit of the indexed documents is pending.
      */
     public async checkPendingJob(): Promise<any> {
         try {
@@ -376,7 +401,7 @@ export class Core {
                 url: `${this.baseUrl}api/orchestrator/doc`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id: docId }
+                data: {id: docId}
             });
             return request.data.response;
         } catch (e) {
@@ -395,7 +420,7 @@ export class Core {
                 url: `${this.baseUrl}api/orchestrator/docs`,
                 method: 'POST',
                 headers: this.headers,
-                data: { docsIds }
+                data: {docsIds}
             });
             return request.data.response;
         } catch (e) {
