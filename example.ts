@@ -1,4 +1,4 @@
-import { KaiStudio, KaiStudioCredentials } from './index';
+import {KaiStudio, KaiStudioCredentials, State} from './index';
 
 export class Credentials implements KaiStudioCredentials {
     public organizationId: string;
@@ -46,12 +46,12 @@ core.countInProgressIndexationDocuments().then((response) => {
     console.log(response);
 })
 
-core.countDocumentsByState('INDEXED').then((response) => {
+core.countDocumentsByState(State.INDEXED).then((response) => {
     console.log('COUNT DOCUMENTS BY STATE:');
     console.log(response);
 })
 
-core.listDocs(20,0, 'CONTENT_EXTRACTED').then((response) => {
+core.listDocs(20,0, State.CONTENT_EXTRACTED).then((response) => {
     console.log('LIST DOCS:');
     console.log(response);
 })
