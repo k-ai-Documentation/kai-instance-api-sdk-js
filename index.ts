@@ -13,8 +13,14 @@ export interface KaiStudioCredentials {
     host?: any
 }
 
-export interface State {
-    state: 'TYPE_ERROR' |'INITIAL_SAVED' | 'UPDATED' | 'ON_CONTENT_EXTRACT' | 'CONTENT_EXTRACTED' | 'ON_INDEXATION' | 'INDEXED';
+export enum State {
+    INITIAL_SAVED = 'INITIAL_SAVED',
+    UPDATED = "UPDATED",
+    ON_CONTENT_EXTRACT = 'ON_CONTENT_EXTRACT',
+    CONTENT_EXTRACTED = 'CONTENT_EXTRACTED',
+    ON_INDEXATION = 'ON_INDEXATION',
+    INDEXED = 'INDEXED'
+
 }
 
 export class KaiStudio {

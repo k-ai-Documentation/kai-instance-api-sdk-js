@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {State} from './../index';
+import {State} from '../index';
 
 /**
  * The Core class provides methods for interacting with the Core API.
@@ -233,7 +233,7 @@ export class Core {
      * @param state - (OPTIONAL) The state of the documents to count. If state is not provided, the method counts all documents.
      * @returns {Promise<number>} The number of documents in the specified state or 0 if the request fails.
      */
-    public async countDocumentsByState(state?: State['state']): Promise<number> {
+    public async countDocumentsByState(state?: State): Promise<number> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/core/count-documents-by-state`,
@@ -315,7 +315,7 @@ export class Core {
      * @param {State} state - (OPTIONAL) The state of the documents to retrieve. If state is not provided, the method retrieves all documents.
      * @returns {Promise<any>} A list of documents or null if the request fails.
      */
-    public async listDocs(limit: number, offset: number, state?: State['state']): Promise<any> {
+    public async listDocs(limit: number, offset: number, state?: State): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/list-docs`,
