@@ -120,7 +120,7 @@ export class Core {
                     method: 'POST',
                     headers: this.headers,
                     data: {
-                        'state': 'INITIAL_SAVE'
+                        'state': 'INITIAL_SAVED'
                     }
                 }).then((response) => {
                     resolve(Number(response.data.response));
