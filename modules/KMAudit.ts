@@ -344,4 +344,56 @@ export class KMAudit {
             throw e
         }
     }
+
+    /**
+     * Count conflict by date
+     *
+     * @param {string} beginDate - begin date to query.
+     * @param {string} endDate - end date to query.
+     * @param {string} state - optional, the state to calculate, DETECTED / MANAGED / IGNORED / REDETECTED / DISAPPEARED
+     * @returns {Promise<any>} Response from the server.
+     */
+    public async countConflictByDate(beginDate: string, endDate: string, state: string = ""): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-by-date`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    beginDate: beginDate,
+                    endDate: endDate,
+                    state: state
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    /**
+     * Count duplicate by date
+     *
+     * @param {string} beginDate - begin date to query.
+     * @param {string} endDate - end date to query.
+     * @param {string} state - optional, the state to calculate, DETECTED / MANAGED / IGNORED / REDETECTED / DISAPPEARED
+     * @returns {Promise<any>} Response from the server.
+     */
+    public async countDuplicateByDate(beginDate: string, endDate: string, state: string = ""): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicate-by-date`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    beginDate: beginDate,
+                    endDate: endDate,
+                    state: state
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
