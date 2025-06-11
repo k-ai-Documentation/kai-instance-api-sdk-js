@@ -427,4 +427,18 @@ export class Core {
             throw e;
         }
     }
+
+    public async getDocumentById(docId: string): Promise<string[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/orchestrator/get-document-by-id`,
+                method: 'POST',
+                headers: this.headers,
+                data: {id: docId}
+            });
+            return request.data.response;
+        } catch (e) {
+            throw e;
+        }
+    }
 }
