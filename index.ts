@@ -45,7 +45,7 @@ export class KaiStudio {
                 'api-key': this.credentials.apiKey
             }
 
-            baseUrl = `https://api.kai-studio.ai/`
+            baseUrl = `http://localhost:8083/`
         }
 
         if (this.credentials.host) {
