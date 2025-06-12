@@ -391,6 +391,15 @@ export class KMAudit {
         }
     }
 
+    /**
+     * count conflicts via a given subject content
+     *
+     * @param {string} subject - subject to query.
+     * @param limit
+     * @param offset
+     * @returns {Promise<any>} Response from the server.
+     */
+
     public async getConflictInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
         try {
             const request = await axios({
@@ -409,6 +418,11 @@ export class KMAudit {
         }
     }
 
+    /**
+     * count conflicts of top 10 subjects
+     *
+     * @returns {Promise<any>} Response from the server.
+     */
     public async countConflictInformationBySubject(): Promise<any> {
         try {
             const request = await axios({
@@ -421,6 +435,15 @@ export class KMAudit {
             throw e
         }
     }
+
+    /**
+     * list duplicates via a given subject content
+     *
+     * @param {string} subject - subject to query.
+     * @param limit
+     * @param offset
+     * @returns {Promise<any>} Response from the server.
+     */
 
     public async getDuplicateInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
         try {
@@ -440,12 +463,90 @@ export class KMAudit {
         }
     }
 
+    /**
+     * count duplicates of top 10 subjects
+     *
+     * @returns {Promise<any>} Response from the server.
+     */
     public async countDuplicatedInformationBySubject(): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-duplicated-information-by-subject`,
                 method: 'POST',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    /**
+     * get duplicates by docIds
+     *
+     * @param {string[]} docIds - docIds to query.
+     * @returns {Promise<any>} Response from the server.
+     */
+
+    public async getDuplicateInformationByDocuments(docIds: string[]): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-duplicate-information-list-by-ids`,
+                method: 'POST',
                 headers: this.headers,
+                data: {
+                    docIds: docIds
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+
+    /**
+     * get conflicts by docIds
+     *
+     * @param {string[]} docIds - docIds to query.
+     * @returns {Promise<any>} Response from the server.
+     */
+
+    public async getConflictInformationByDocuments(docIds: string[]): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-conflict-information-list-by-ids`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    docIds: docIds
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async getDuplicateInformationDocumentPair(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-duplicate-information-document-pair`,
+                method: 'POST',
+                headers: this.headers,
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async getConflictInformationDocumentPair(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-conflict-information-document-pair`,
+                method: 'POST',
+                headers: this.headers
             })
             return request.data.response
         } catch (e) {
