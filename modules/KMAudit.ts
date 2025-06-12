@@ -390,4 +390,66 @@ export class KMAudit {
             throw e
         }
     }
+
+    public async getConflictInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-conflict-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    subject: subject,
+                    limit: limit,
+                    offset: offset
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async countConflictInformationBySubject(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async getDuplicateInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-duplicate-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    subject: subject,
+                    limit: limit,
+                    offset: offset
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    public async countDuplicatedInformationBySubject(): Promise<any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicated-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }
