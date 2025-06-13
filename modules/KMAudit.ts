@@ -550,7 +550,7 @@ export class KMAudit {
         }
     }
 
-    public async getDuplicateInformationDocumentPair(limit: number = 20, offset: number = 0): Promise<any> {
+    public async getDuplicateInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-duplicate-information-document-pair`,
@@ -558,7 +558,8 @@ export class KMAudit {
                 headers: this.headers,
                 data: {
                     limit: limit,
-                    offset: offset
+                    offset: offset,
+                    documentName: documentName
                 }
             })
             return request.data.response
@@ -567,7 +568,7 @@ export class KMAudit {
         }
     }
 
-    public async getConflictInformationDocumentPair(limit: number = 20, offset: number = 0): Promise<any> {
+    public async getConflictInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-conflict-information-document-pair`,
@@ -575,7 +576,8 @@ export class KMAudit {
                 headers: this.headers,
                 data: {
                     limit: limit,
-                    offset: offset
+                    offset: offset,
+                    documentName: documentName
                 }
             })
             return request.data.response
