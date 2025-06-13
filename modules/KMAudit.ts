@@ -550,12 +550,16 @@ export class KMAudit {
         }
     }
 
-    public async getDuplicateInformationDocumentPair(): Promise<any> {
+    public async getDuplicateInformationDocumentPair(limit: number = 20, offset: number = 0): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-duplicate-information-document-pair`,
                 method: 'POST',
                 headers: this.headers,
+                data: {
+                    limit: limit,
+                    offset: offset
+                }
             })
             return request.data.response
         } catch (e) {
@@ -563,12 +567,16 @@ export class KMAudit {
         }
     }
 
-    public async getConflictInformationDocumentPair(): Promise<any> {
+    public async getConflictInformationDocumentPair(limit: number = 20, offset: number = 0): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-conflict-information-document-pair`,
                 method: 'POST',
-                headers: this.headers
+                headers: this.headers,
+                data: {
+                    limit: limit,
+                    offset: offset
+                }
             })
             return request.data.response
         } catch (e) {
