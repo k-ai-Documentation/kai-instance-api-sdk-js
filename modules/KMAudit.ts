@@ -178,10 +178,32 @@ export class KMAudit {
      *
      * @returns {Promise<Document[]>} A list of documents to manage.
      */
-    public async getDocumentsToManageList(): Promise<Document[] | any> {
+    public async getDocumentsToManageList(limit: number, offset: number): Promise<Document[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/documents-to-manage`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    offset: offset,
+                    limit: limit
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    /**
+     * Retrieves a list of documents containing conflicts or duplicated information.
+     *
+     * @returns {Promise<Document[]>} A list of documents to manage.
+     */
+    public async getDocumentIdsToManageList(): Promise<Document[] | any> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/document-ids-to-manage`,
                 method: 'POST',
                 headers: this.headers
             })
