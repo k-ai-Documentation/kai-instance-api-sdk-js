@@ -83,9 +83,10 @@ export class KMAudit {
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
      * @param {string} query - Query string
+     * @param state
      * @returns {Promise<ConflictInformation[]>} A list of conflict information.
      */
-    public async getConflictInformation(limit: number, offset: number, query: string = ''): Promise<ConflictInformation[] | any> {
+    public async getConflictInformation(limit: number, offset: number, query: string = '', state: string = ""): Promise<ConflictInformation[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/conflict-information`,
@@ -94,7 +95,8 @@ export class KMAudit {
                 data: {
                     offset: offset,
                     limit: limit,
-                    query: query
+                    query: query,
+                    state: state
                 }
             })
             return request.data.response
@@ -109,9 +111,10 @@ export class KMAudit {
      * @param {number} limit - Number of results to return.
      * @param {number} offset - Number of results to skip before starting to collect the result set.
      * @param {string} query - Query string
+     * @param state
      * @returns {Promise<DuplicateInformation[]>} A list of duplicated information.
      */
-    public async getDuplicatedInformation(limit: number, offset: number, query: string = ''): Promise<DuplicateInformation[] | any> {
+    public async getDuplicatedInformation(limit: number, offset: number, query: string = '', state: string = ""): Promise<DuplicateInformation[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/duplicated-information`,
@@ -120,7 +123,8 @@ export class KMAudit {
                 data: {
                     offset: offset,
                     limit: limit,
-                    query: query
+                    query: query,
+                    state: state
                 }
             })
             return request.data.response
