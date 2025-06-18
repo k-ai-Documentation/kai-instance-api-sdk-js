@@ -66,11 +66,6 @@ core.indexNewOrUpdatedDocument().then((response) => {
     console.log(response);
 });
 
-core.getAllScenarios().then((response) => {
-    console.log('GET ALL SCENARIOS:');
-    console.log(response);
-});
-
 core.lastIndexationBeginTime().then((response) => {
     console.log('LAST INDEXATION BEGIN TIME:');
     console.log(response);
@@ -105,16 +100,6 @@ auditInstance.getDuplicatedInformation(20, 0).then((response) => {
     console.log('GET DUPLICATED INFORMATION:');
     console.log(response);
 });
-
-auditInstance.setConflictManaged(1).then((response) => {
-    console.log('SET CONFLICT MANAGED:');
-    console.log(response);
-})
-
-auditInstance.setDuplicatedInformationManaged(1).then((response) => {
-    console.log('SET DUPLICATED INFORMATION MANAGED:');
-    console.log(response);
-})
 
 auditInstance.getDocumentsToManageList(20, 0).then((response) => {
     console.log('GET DOCUMENTS TO MANAGE LIST:');
@@ -188,6 +173,11 @@ search.listQuestionsAsked(20, 0).then((response) => {
 
 search.identifySpecificDocument([{from:"user", message: "user message"}, {from:"assistant", message: "assistant message"}]).then((response) => {
     console.log('IDENTIFY SPECIFIC DOCUMENT:');
+    console.log(response);
+})
+
+search.countAnsweredSearchByDate('2022-01-01', '2022-12-31').then((response) => {
+    console.log('COUNT ANSWERED SEARCH BY DATE:');
     console.log(response);
 })
 

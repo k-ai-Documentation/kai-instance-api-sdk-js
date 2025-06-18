@@ -211,4 +211,21 @@ export class ManageInstance {
             throw e;
         }
     }
+
+    /**
+     * Get the current version of the API.
+     * @returns A promise resolving to the current version of the API.
+     */
+    public async getVersion(): Promise<string> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}version`,
+                method: 'GET',
+                headers: this.headers
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }

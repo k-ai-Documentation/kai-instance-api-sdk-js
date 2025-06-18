@@ -290,24 +290,6 @@ export class Core {
     }
 
     /**
-     * Retrieves a list of all available scenarios along with their API signatures.
-     *
-     * @returns {Promise<any>} A list of scenarios or null if the request fails.
-     */
-    public async getAllScenarios(): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/orchestrator/scenarios`,
-                method: 'POST',
-                headers: this.headers,
-            });
-            return request.data.response;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    /**
      * Lists documents with pagination and state.
      *
      * @param {number} limit - The number of documents to return.

@@ -143,23 +143,6 @@ export class Search {
     }
 
     /**
-     * Get the current version of the API.
-     * @returns A promise resolving to the current version of the API.
-     */
-    public async getVersion(): Promise<string> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}version`,
-                method: 'GET',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
      * Count the number of search queries made by date.
      * @param {string} beginDate - The start date for the search count.
      * @param {string} endDate - The end date for the search count.
@@ -172,6 +155,29 @@ export class Search {
                 method: 'POST',
                 headers: this.headers,
                 data: {
+                    "beginDate": beginDate,
+                    "endDate": endDate
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
+
+    /**
+     * Count the number of answered search queries by date.
+     * @param {string} beginDate - The start date for the search count.
+     * @param {string} endDate - The end date for the search count.
+     * @returns A promise resolving to an object containing the count of answered search queries by date.
+     */
+    public async countAnsweredSearchByDate(beginDate: string, endDate: string) :Promise<{ [key: string]: number }>{
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/search/count-answered-search-by-date`,
+                method: 'POST',
+                headers: this.headers,
+                data:{
                     "beginDate": beginDate,
                     "endDate": endDate
                 }

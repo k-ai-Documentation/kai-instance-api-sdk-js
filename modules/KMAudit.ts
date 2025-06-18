@@ -134,50 +134,6 @@ export class KMAudit {
     }
 
     /**
-     * Marks a conflict as managed.
-     *
-     * @param {number} id - ID of the conflict to set as managed.
-     * @returns {Promise<any>} Response from the server.
-     */
-    public async setConflictManaged(id: number): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/conflict-information/set-managed`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    id: id
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Marks a duplicate as managed.
-     *
-     * @param {number} id - ID of the duplicate to set as managed.
-     * @returns {Promise<any>} Response from the server.
-     */
-    public async setDuplicatedInformationManaged(id: number): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/duplicated-information/set-managed`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    id: id
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
      * Retrieves a list of documents containing conflicts or duplicated information.
      *
      * @returns {Promise<Document[]>} A list of documents to manage.
