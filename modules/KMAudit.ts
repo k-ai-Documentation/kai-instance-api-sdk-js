@@ -405,12 +405,15 @@ export class KMAudit {
      *
      * @returns {Promise<any>} Response from the server.
      */
-    public async countConflictInformationBySubject(): Promise<any> {
+    public async countConflictInformationBySubject(limit: number = 10): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-information-by-subject`,
                 method: 'POST',
                 headers: this.headers,
+                data: {
+                    limit: limit
+                }
             })
             return request.data.response
         } catch (e) {
@@ -450,12 +453,15 @@ export class KMAudit {
      *
      * @returns {Promise<any>} Response from the server.
      */
-    public async countDuplicatedInformationBySubject(): Promise<any> {
+    public async countDuplicatedInformationBySubject(limit: number = 10): Promise<any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-duplicated-information-by-subject`,
                 method: 'POST',
-                headers: this.headers
+                headers: this.headers,
+                data: {
+                    limit: limit
+                }
             })
             return request.data.response
         } catch (e) {
@@ -510,6 +516,17 @@ export class KMAudit {
         }
     }
 
+    /**
+     * get duplicates by docIds
+     *
+     * @param limit
+     * @param offset
+     * @param documentName
+     * @returns {Promise<any>} Array of pairs of documents id like [[
+            "Sharepoint::016PKDMBPHECQGGYGDXZGX37RUD",
+            "Sharepoint::016PKDMBJQHF7P65T3KTLWOAM"
+        ]...]
+     */
     public async getDuplicateInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
         try {
             const request = await axios({
@@ -528,6 +545,17 @@ export class KMAudit {
         }
     }
 
+    /**
+     * get duplicates by docIds
+     *
+     * @param limit
+     * @param offset
+     * @param documentName
+     * @returns {Promise<any>} Array of pairs of documents id like [[
+            "Sharepoint::016PKDMBPHECQGGYGDXZGX37RUD",
+            "Sharepoint::016PKDMBJQHF7P65T3KTLWOAM"
+        ]...]
+     */
     public async getConflictInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
         try {
             const request = await axios({

@@ -143,9 +143,11 @@ core.countDocuments().then(response => {
 - `getConflictInformationBySubject`: Get conflict information by subject  
   > subject, limit, offset
 - `countConflictInformationBySubject`: Count conflicts grouped by subject
+  > limit: get top limit subjects
 - `getDuplicateInformationBySubject`: Get duplicate information by subject  
   > subject, limit, offset
 - `countDuplicatedInformationBySubject`: Count duplicates grouped by subject
+  > limit: get top limit subjects
 - `getDuplicateInformationByDocuments`: Get duplicates by document IDs  
   > docIds
 - `getConflictInformationByDocuments`: Get conflicts by document IDs  
