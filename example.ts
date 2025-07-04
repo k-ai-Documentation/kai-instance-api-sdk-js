@@ -86,7 +86,7 @@ core.getDocSignature('Azure Blob Storage::{{blob storage id}}::Contacter FranceT
     console.log(response);
 });
 
-core.getDocsIds(['Sharepoint::01TE4EPWFLWDMCRPKFM5GZRFYGWEEBX6G2', 'Sharepoint::01TE4EPWEJF5AGPGX7V5FYMYUDPFNFG325']).then((response) => {
+core.getDocsIds(['Sharepoint::01TE4EPWFLWDMCRPKFM5GZRFYGWEEBX6G2', 'Sharepoint::01TE4EPWEJF5AGPGX7V5FYMYUDPFNFG325'],2).then((response) => {
     console.log('GET DOCS BY IDS:');
     console.log(response);
 });
@@ -126,7 +126,7 @@ auditInstance.countConflictInformation().then((response) => {
     console.log(response);
 })
 
-auditInstance.getAnomaliesForDoc("docId").then((response) => {
+auditInstance.getAnomaliesForDoc("docId", 20, 0).then((response) => {
     console.log('GET ANOMALIES FOR DOC:');
     console.log(response);
 })

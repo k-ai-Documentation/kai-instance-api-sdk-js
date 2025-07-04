@@ -101,6 +101,9 @@ There are 5 modules in the SDK:
 - `checkPendingJob`: Get information about instance background jobs in progress
 - `getDocumentById`: Get document by id
   > docId: document id
+- `getDocsIds`: Get documents by list of documents ids
+  > docIds: list of documents ids
+  > limit: number of content to return
 
 For example:
 
@@ -119,43 +122,67 @@ core.countDocuments().then(response => {
 [KMAudit.ts](modules/KMAudit.ts) provides methods for auditing files.
 
 - `getConflictInformation`: Get conflict information  
-  > limit, offset, query, state
+  > limit: number of content to return
+  >offset: number of content to skip before starting to collect the result set
+  >query: search query
+  >state: state of the conflict information
 - `getDuplicatedInformation`: Get duplicated information  
-  > limit, offset, query, state
+  > limit: number of content to return
+  >offset: number of content to skip before starting to collect the result set
+  >query: search query
+  >state: state of the duplicated information
 - `getDocumentsToManageList`: List documents containing conflicts or duplicates  
-  > limit, offset
+  > limit: number of content to return
+  >offset: number of content to skip before starting to collect the result set
 - `getDocumentIdsToManageList`: List document IDs containing conflicts or duplicates
 - `getMissingSubjectList`: List missing subjects  
-  > limit, offset
+  > limit: number of content to return
+  >offset: number of content to skip before starting to collect the result set
 - `countMissingSubjects`: Count missing subjects
 - `countDuplicatedInformation`: Count duplicated information
 - `countConflictInformation`: Count conflict information
 - `getAnomaliesForDoc`: Get anomalies (conflicts and duplicates) for a document  
-  > docId
+  > docId: document id
+  > limit: number of content to return
+  > offset: number of content to skip before starting to collect the result set
 - `conflictInformationSetState`: Set the state for a conflict information  
-  > id, state
+  > id: id of the conflict information
+  > state: state of the conflict information
 - `duplicatedInformationSetState`: Set the state for a duplicated information  
-  > id, state
+  > id: id of the duplicated information
+  > state: state of the duplicated information
 - `countConflictByDate`: Count conflicts within a date range  
-  > beginDate, endDate, state
+  > beginDate: begin date
+  > endDate: end date
+  > state: state of the conflict information
 - `countDuplicateByDate`: Count duplicates within a date range  
-  > beginDate, endDate, state
+  > beginDate: begin date
+  > endDate: end date
+  > state: state of the duplicated information
 - `getConflictInformationBySubject`: Get conflict information by subject  
-  > subject, limit, offset
+  > subject: subject of conflict information
+  > limit: number of content to return
+  > offset: number of content to skip before starting to collect the result set
 - `countConflictInformationBySubject`: Count conflicts grouped by subject
   > limit: get top limit subjects
 - `getDuplicateInformationBySubject`: Get duplicate information by subject  
-  > subject, limit, offset
+  > subject: subject of duplicate information
+  > limit: number of content to return
+  > offset: number of content to skip before starting to collect the result set
 - `countDuplicatedInformationBySubject`: Count duplicates grouped by subject
   > limit: get top limit subjects
 - `getDuplicateInformationByDocuments`: Get duplicates by document IDs  
-  > docIds
+  > docIds: list of document IDs
 - `getConflictInformationByDocuments`: Get conflicts by document IDs  
-  > docIds
+  > docIds: list of document IDs
 - `getDuplicateInformationDocumentPair`: Get duplicate document pairs  
-  > limit, offset, documentName
+  > limit: number of content to return
+  > offset: number of content to skip before starting to collect the result set
+  > documentName: name of the document
 - `getConflictInformationDocumentPair`: Get conflict document pairs  
-  > limit, offset, documentName
+  > limit: number of content to return
+  > offset: number of content to skip before starting to collect the result set
+  > documentName: name of the document
 
 For example:
 

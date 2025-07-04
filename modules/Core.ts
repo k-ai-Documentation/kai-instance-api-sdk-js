@@ -396,7 +396,7 @@ export class Core {
      * @param {string[]} docsIds - An array containing all document IDs.
      * @returns A promise resolving to an array of document signatures.
      */
-    public async getDocsIds(docsIds: string[]): Promise<string[]> {
+    public async getDocsIds(docsIds: string[], limit: number = 10): Promise<string[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/orchestrator/docs`,

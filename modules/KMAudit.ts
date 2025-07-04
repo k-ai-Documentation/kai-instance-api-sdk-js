@@ -255,16 +255,20 @@ export class KMAudit {
      * Retrieves anomalies (conflicts and duplicates) for a document.
      *
      * @param {string} docId - The ID of the document to get anomalies for.
+     * @param {number} limit - The maximum number of anomalies to retrieve.
+     * @param {number} offset - The number of anomalies to skip.
      * @returns {Promise<Document[]>} A list of anomalies for the document.
      */
-    public async getAnomaliesForDoc(docId: string): Promise<Document[] | any> {
+    public async getAnomaliesForDoc(docId: string, limit: number=20, offset: number=0): Promise<Document[] | any> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-anomalies-for-document`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    docId: docId
+                    docId: docId,
+                    limit: limit,
+                    offset: offset
                 }
             })
             return request.data.response
