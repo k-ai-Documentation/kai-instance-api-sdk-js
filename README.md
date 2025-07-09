@@ -126,11 +126,13 @@ core.countDocuments().then(response => {
   >offset: number of content to skip before starting to collect the result set
   >query: search query
   >state: state of the conflict information
+  >documentName: name of the document to filter
 - `getDuplicatedInformation`: Get duplicated information  
   > limit: number of content to return
   >offset: number of content to skip before starting to collect the result set
   >query: search query
   >state: state of the duplicated information
+  >documentName: name of the document to filter
 - `getDocumentsToManageList`: List documents containing conflicts or duplicates  
   > limit: number of content to return
   >offset: number of content to skip before starting to collect the result set
