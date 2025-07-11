@@ -46,7 +46,7 @@ export class Core {
                     method: 'POST',
                     headers: this.headers,
                     data: {
-                        'state': 'TYPE_ERROR'
+                        'state': 'PARSING_ERROR'
                     }
                 }).then((response) => {
                     resolve(Number(response.data.response));

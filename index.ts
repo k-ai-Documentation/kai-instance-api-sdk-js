@@ -20,7 +20,7 @@ export enum State {
     CONTENT_EXTRACTED = 'CONTENT_EXTRACTED',
     ON_INDEXATION = 'ON_INDEXATION',
     INDEXED = 'INDEXED',
-    TYPE_ERROR = 'TYPE_ERROR'
+    PARSING_ERROR = 'PARSING_ERROR'
 }
 
 export class KaiStudio {

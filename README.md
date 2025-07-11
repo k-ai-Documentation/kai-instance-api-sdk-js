@@ -326,7 +326,7 @@ chatbot.getFullConversation("abcdedfg").then(response => {
 We have 7 states for a document:
 
 ```ts
-'TYPE_ERROR', // document type is not supported
+'PARSING_ERROR', // document type is not supported
 'INITIAL_SAVED', // initial save
 "UPDATED", // document is updated (without the content) par rapport à l'API
 'ON_CONTENT_EXTRACT', // document content is currently is working on fileparser
