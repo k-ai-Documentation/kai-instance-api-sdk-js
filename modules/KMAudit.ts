@@ -581,4 +581,25 @@ export class KMAudit {
             throw e
         }
     }
+
+    /**
+     * delete missing information
+     * @param id - id of duplicated information
+     * @returns {Promise<boolean>} True if success, False otherwise
+     */
+    public async deleteMissingInformation(id: string): Promise<boolean> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/delete-missing-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: {
+                    id: id
+                }
+            })
+            return request.data.response
+        } catch (e) {
+            throw e
+        }
+    }
 }

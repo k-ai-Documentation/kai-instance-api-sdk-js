@@ -185,6 +185,8 @@ core.countDocuments().then(response => {
   > limit: number of content to return
   > offset: number of content to skip before starting to collect the result set
   > documentName: name of the document
+- `deleteMissingInformation`: Delete missing information
+  > id: id of the missing information
 
 For example:
 
