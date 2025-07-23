@@ -17,7 +17,7 @@ export interface SearchLog {
     id: string;
     answer_text: string;
     query: string;
-    user: string;
+    user_id: string;
     date: string;
 }
 

@@ -10,7 +10,7 @@ interface ConversationMessage {
 
 interface ChatbotMessage {
     id: string;
-    message: string;
+    message: Record<string, any>;
 }
 
 /**
@@ -43,7 +43,7 @@ export class Chatbot {
     public async getFullConversation(id: string): Promise<ConversationMessage[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/chatbot/get-conversation`,
+                url: `${this.baseUrl}api/conversation/get-conversation`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
@@ -66,7 +66,7 @@ export class Chatbot {
     public async conversation(id: string = "", user_message: string): Promise<ChatbotMessage> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/chatbot/message`,
+                url: `${this.baseUrl}api/conversation/message`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
