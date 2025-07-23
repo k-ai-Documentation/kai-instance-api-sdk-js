@@ -1,108 +1,127 @@
+
 import axios from "axios";
 
 /**
- * Class representing a Semantic Graph API client.
+ * A class to interact with a semantic graph API, providing methods to retrieve nodes,
+ * linked nodes, nodes by label, and detect approximate nodes.
  */
+
+export interface PartialDocument {
+    id: string;
+    content: string[];
+}
+
+export interface IdentifiedNode {
+    id: string;
+    node1: string;
+    node2: string;
+    edge: string;
+    documents: PartialDocument[] | string[];
+}
+
+export interface SemanticNodeExtraproperties {
+    documents: string[];
+    chunks: string[];
+    count: number;
+}
+
+export interface SemanticNode {
+    id: string;
+    node1: string;
+    node2: string;
+    edge: string;
+    extraproperties: SemanticNodeExtraproperties;
+}
+
 export class SemanticGraph {
-
-    private readonly headers: object;
-    private readonly baseUrl: string;
-
     /**
-     * Create a SemanticGraph instance.
-     * @param {object} headers - The headers for API requests.
-     * @param {string} baseUrl - The base URL for the API.
+     * Initializes the SemanticGraph client.
+     * @param headers HTTP headers to include in requests.
+     * @param baseUrl The base URL for the API.
      */
+    private readonly baseUrl: string;
+    private readonly headers: object;
+
     constructor(headers: object, baseUrl: string) {
-        this.headers = headers;
         this.baseUrl = baseUrl;
+        this.headers = headers;
     }
 
     /**
      * Retrieve a list of nodes from the semantic graph.
-     * @param {number} limit - The maximum number of nodes to retrieve. Maximum is 50.
-     * @param {number} offset - The number of nodes to skip before collecting results.
-     * @returns {Promise<any>} - A promise that resolves with the nodes data.
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/semantic-graph#post-nodes
      */
-    public async getNodes(limit: number, offset: number): Promise<any> {
+    public async getNodes(limit: number = 20, offset: number = 0): Promise<SemanticNode[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/semantic-graph/nodes`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    'limit': limit,
-                    'offset': offset
+                    limit: limit || 20,
+                    offset: offset || 0
                 }
             });
-            return request.data.response;
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Retrieve nodes linked to a given node.
-     * @param {number} id | string - The ID of the node.
-     * @returns {Promise<any>} - A promise that resolves with the linked nodes data.
-     */
-    public async getLinkedNodes(id: number | string): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/semantic-graph/linked-nodes`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    'id': id
-                }
-            });
-            return request.data.response;
-        } catch (e) {
-            throw e;
+            return request.data.response as SemanticNode[];
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
      * Retrieve nodes by their label.
-     * @param {string} label - The label of the nodes.
-     * @returns {Promise<any>} - A promise that resolves with the nodes matching the label.
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/semantic-graph#post-nodes-by-label
      */
-    public async getNodeByLabel(label: string): Promise<any> {
+    public async getNodeByLabel(label: string): Promise<SemanticNode[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/semantic-graph/nodes-by-label`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    'label': label
-                }
+                data: { label }
             });
-            return request.data.response;
-        } catch (e) {
-            throw e;
+            return request.data.response as SemanticNode[];
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * Identify approximate nodes related to a query.
-     * @param {string} query - The query to find approximate nodes.
-     * @param need_documents_content - whether response needs document content
-     * @returns {Promise<any>} - A promise that resolves with the detected nodes.
+     * Identify nodes related to a query.
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/semantic-graph#post-identify-nodes
      */
-    public async detectApproximalNodes(query: string, need_documents_content: boolean = false): Promise<any> {
+    public async identifyNodes(query: string, needDocumentsContent: boolean = false): Promise<IdentifiedNode[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/semantic-graph/identify-nodes`,
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    'query': query,
-                    'need_documents_content': need_documents_content
+                    query,
+                    need_documents_content: needDocumentsContent
                 }
             });
-            return request.data.response;
-        } catch (e) {
-            throw e;
+            return request.data.response as IdentifiedNode[];
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Retrieve nodes linked to a given node by ID.
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/semantic-graph#post-linked-nodes-by-id
+     */
+    public async linkedNodesById(id: string): Promise<SemanticNode[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/semantic-graph/linked-nodes-by-id`,
+                method: 'POST',
+                headers: this.headers,
+                data: { id }
+            });
+            return request.data.response as SemanticNode[];
+        } catch (err) {
+            throw err;
         }
     }
 }

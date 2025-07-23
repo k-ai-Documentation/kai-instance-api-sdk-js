@@ -1,591 +1,335 @@
 import axios from "axios";
 
 /**
- * Represents conflict information.
+ * AnomalyState
+ * State for anomaly information
  */
-export interface ConflictInformation {
-    id: string;
-    state: string;
-    subject: string;
-    creation_date: string;
-    docsRef: Document[];
-    documents: InvolvedInformation[];
+export enum AnomalyState {
+    MANAGED = 'managed',
+    IGNORED = 'ignored',
+    DETECTED = 'detected'
 }
 
 /**
- * Represents duplicate information.
+ * AnomalyInformationDocument
+ * Information involved in a document anomaly
  */
-export interface DuplicateInformation {
-    id: string;
-    state: string;
-    subject: string;
-    creation_date: string;
-    docsRef: Document[];
-    documents: InvolvedInformation[];
-}
-
-/**
- * Represents missing subject information.
- */
-export interface MissingSubject {
-    id: number;
-    information_needed: string;
-    questions: string[];
-    subject: string;
-}
-
-/**
- * Represents a document.
- */
-export interface Document {
-    id: string;
-    name: string;
-    url: string;
-}
-
-/**
- * Represents involved information in a document.
- */
-export interface InvolvedInformation {
-    docId: string;
+export interface AnomalyInformationDocument {
+    doc_id: string;
     information_involved: string;
 }
 
 /**
- * Represents a task containing conflicts and duplicates.
+ * Anomaly
+ * Structure for anomaly (conflict/duplicate)
  */
-export interface Task {
-    conflicts: string[];
-    duplicates: string[];
+export interface Anomaly {
+    id: string;
+    subject: string;
+    state: string;
+    documents: AnomalyInformationDocument[];
+    explanation: string;
 }
 
 /**
- * Manages auditing functionalities, including conflicts, duplicates, and missing subjects.
+ * DocumentAnomalies
+ * Structure for document anomalies (conflicts and duplicates)
+ */
+export interface DocumentAnomalies {
+    conflicts: Anomaly[];
+    duplicated: Anomaly[];
+}
+
+/**
+ * Client for interacting with the audit API to manage conflicts, duplicates, and anomalies in documents.
  */
 export class KMAudit {
-    private readonly headers: object;
     private readonly baseUrl: string;
+    private readonly headers: object;
 
     /**
-     * Creates an instance of KMAudit.
-     *
-     * @param {object} headers - The HTTP headers to include in requests.
-     * @param {string} baseUrl - The base URL for the API.
+     * Initialize the KMAudit client.
+     * @param headers HTTP headers required for API authentication.
+     * @param baseUrl The base URL of the audit API.
      */
     constructor(headers: object, baseUrl: string) {
-        this.headers = headers;
         this.baseUrl = baseUrl;
+        this.headers = headers;
     }
 
     /**
-     * Retrieves conflict information.
-     *
-     * @param {number} limit - Number of results to return.
-     * @param {number} offset - Number of results to skip before starting to collect the result set.
-     * @param {string} query - Query string
-     * @param state
-     * @param documentName
-     * @returns {Promise<ConflictInformation[]>} A list of conflict information.
+     * Set conflict state
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-conflict-information-set-state
      */
-    public async getConflictInformation(limit: number, offset: number, query: string = '', state: string = "", documentName: string = ""): Promise<ConflictInformation[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/conflict-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    offset: offset,
-                    limit: limit,
-                    query: query,
-                    state: state,
-                    documentName: documentName
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Retrieves duplicated information.
-     *
-     * @param {number} limit - Number of results to return.
-     * @param {number} offset - Number of results to skip before starting to collect the result set.
-     * @param {string} query - Query string
-     * @param state
-     * @param documentName
-     * @returns {Promise<DuplicateInformation[]>} A list of duplicated information.
-     */
-    public async getDuplicatedInformation(limit: number, offset: number, query: string = '', state: string = "", documentName: string = ""): Promise<DuplicateInformation[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/duplicated-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    offset: offset,
-                    limit: limit,
-                    query: query,
-                    state: state,
-                    documentName: documentName
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Retrieves a list of documents containing conflicts or duplicated information.
-     *
-     * @returns {Promise<Document[]>} A list of documents to manage.
-     */
-    public async getDocumentsToManageList(limit: number, offset: number): Promise<Document[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/documents-to-manage`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    offset: offset,
-                    limit: limit
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Retrieves a list of documents containing conflicts or duplicated information.
-     *
-     * @returns {Promise<Document[]>} A list of documents to manage.
-     */
-    public async getDocumentIdsToManageList(): Promise<Document[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/document-ids-to-manage`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Retrieves a list of missing subjects.
-     *
-     * @param {number} limit - Number of results to return.
-     * @param {number} offset - Number of results to skip before starting to collect the result set.
-     * @returns {Promise<MissingSubject[]>} A list of missing subjects.
-     */
-    public async getMissingSubjectList(limit: number, offset: number): Promise<MissingSubject[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/missing-subjects`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    offset: offset,
-                    limit: limit
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Counts the number of missing subjects.
-     *
-     * @returns {Promise<number>} The total count of missing subjects.
-     */
-    public async countMissingSubjects(): Promise<number | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-missing-subjects`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Counts the number of duplicated information entries.
-     *
-     * @returns {Promise<number>} The total count of duplicated information.
-     */
-    public async countDuplicatedInformation(): Promise<number | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicated-information`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Counts the number of conflict information entries.
-     *
-     * @returns {Promise<number>} The total count of conflict information.
-     */
-    public async countConflictInformation(): Promise<number | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-conflict-information`,
-                method: 'POST',
-                headers: this.headers
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Retrieves anomalies (conflicts and duplicates) for a document.
-     *
-     * @param {string} docId - The ID of the document to get anomalies for.
-     * @param {number} limit - The maximum number of anomalies to retrieve.
-     * @param {number} offset - The number of anomalies to skip.
-     * @returns {Promise<Document[]>} A list of anomalies for the document.
-     */
-    public async getAnomaliesForDoc(docId: string, limit: number=20, offset: number=0): Promise<Document[] | any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-anomalies-for-document`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    docId: docId,
-                    limit: limit,
-                    offset: offset
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * Sets the state of a conflict information entry.
-     *
-     * @param {string} id - The ID of the conflict information.
-     * @param {string} state - The state to set (e.g., "managed" or "ignored").
-     * @returns {Promise<any>} Response from the server.
-     */
-    public async conflictInformationSetState(id: string, state: string): Promise<any> {
+    public async updateConflictState(id: string, state: AnomalyState): Promise<boolean> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/conflict-information/set-state`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    id: id,
-                    state: state
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { id, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * Sets the state of a duplicated information entry.
-     *
-     * @param {string} id - The ID of the duplicated information.
-     * @param {string} state - The state to set (e.g., "managed" or "ignored").
-     * @returns {Promise<any>} Response from the server.
+     * Set duplicate state
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-duplicated-information-set-state
      */
-    public async duplicatedInformationSetState(id: string, state: string): Promise<any> {
+    public async updateDuplicateState(id: string, state: AnomalyState): Promise<boolean> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/duplicated-information/set-state`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    id: id,
-                    state: state
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { id, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * Count conflict by date
-     *
-     * @param {string} beginDate - begin date to query.
-     * @param {string} endDate - end date to query.
-     * @param {string} state - optional, the state to calculate, DETECTED / MANAGED / IGNORED / REDETECTED / DISAPPEARED
-     * @returns {Promise<any>} Response from the server.
+     * Count conflicts
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-information
      */
-    public async countConflictByDate(beginDate: string, endDate: string, state: string = ""): Promise<any> {
+    public async countConflicts(): Promise<number> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count duplicates
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicated-information
+     */
+    public async countDuplicates(): Promise<number> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicated-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * List conflicts
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-conflict-information
+     */
+    public async listConflicts(limit: number = 200, offset: number = 0, query?: string, document_name?: string, state?: AnomalyState): Promise<Anomaly[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/conflict-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: { limit, offset, query, document_name, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * List duplicates
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-duplicated-information
+     */
+    public async listDuplicates(limit: number = 200, offset: number = 0, query?: string, document_name?: string, state?: AnomalyState): Promise<Anomaly[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/duplicated-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: { limit, offset, query, document_name, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count anomalies per document
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
+     */
+    public async countAnomaliesPerDocument(): Promise<Record<string, Record<string, number>>> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/document-ids-to-manage`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Get anomalies for a document
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
+     */
+    public async getAnomaliesForDocument(document_id: string): Promise<DocumentAnomalies> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-anomalies-for-document`,
+                method: 'POST',
+                headers: this.headers,
+                data: { id: document_id }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count conflicts for period
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-date
+     */
+    public async countConflictsForPeriod(begin_date: string, end_date: string, state?: string): Promise<Record<string, Record<string, number>>> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-by-date`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    beginDate: beginDate,
-                    endDate: endDate,
-                    state: state
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { begin_date, end_date, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * Count duplicate by date
-     *
-     * @param {string} beginDate - begin date to query.
-     * @param {string} endDate - end date to query.
-     * @param {string} state - optional, the state to calculate, DETECTED / MANAGED / IGNORED / REDETECTED / DISAPPEARED
-     * @returns {Promise<any>} Response from the server.
+     * Count duplicates for period
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-date
      */
-    public async countDuplicateByDate(beginDate: string, endDate: string, state: string = ""): Promise<any> {
+    public async countDuplicatesForPeriod(begin_date: string, end_date: string, state?: string): Promise<Record<string, Record<string, number>>> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-duplicate-by-date`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    beginDate: beginDate,
-                    endDate: endDate,
-                    state: state
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { begin_date, end_date, state }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * count conflicts via a given subject content
-     *
-     * @param {string} subject - subject to query.
-     * @param limit
-     * @param offset
-     * @returns {Promise<any>} Response from the server.
+     * Get conflict document pairs
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflict-document-pair
      */
-
-    public async getConflictInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
+    public async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string): Promise<any[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/audit/get-conflict-information-by-subject`,
+                url: `${this.baseUrl}api/audit/get-conflict-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    subject: subject,
-                    limit: limit,
-                    offset: offset
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { limit, offset, document_name }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * count conflicts of top 10 subjects
-     *
-     * @returns {Promise<any>} Response from the server.
+     * Get duplicate document pairs
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicate-document-pair
      */
-    public async countConflictInformationBySubject(limit: number = 10): Promise<any> {
+    public async getDuplicateDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string): Promise<any[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/audit/count-conflict-information-by-subject`,
+                url: `${this.baseUrl}api/audit/get-duplicate-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    limit: limit
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { limit, offset, document_name }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * list duplicates via a given subject content
-     *
-     * @param {string} subject - subject to query.
-     * @param limit
-     * @param offset
-     * @returns {Promise<any>} Response from the server.
+     * Get conflicts by document pair
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflicts-by-document-id-pair
      */
-
-    public async getDuplicateInformationBySubject(subject: string, limit: number = 20, offset: number = 0): Promise<any> {
+    public async getConflictsByDocumentPair(document_ids: string[], limit: number = 200, offset: number = 0): Promise<Anomaly[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicate-information-by-subject`,
+                url: `${this.baseUrl}api/audit/get-conflicts-by-document-id-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    subject: subject,
-                    limit: limit,
-                    offset: offset
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { document_ids, limit, offset }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * count duplicates of top 10 subjects
-     *
-     * @returns {Promise<any>} Response from the server.
+     * Get duplicates by document pair
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicates-by-document-id-pair
      */
-    public async countDuplicatedInformationBySubject(limit: number = 10): Promise<any> {
+    public async getDuplicatesByDocumentPair(document_ids: string[], limit: number = 200, offset: number = 0): Promise<Anomaly[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicated-information-by-subject`,
+                url: `${this.baseUrl}api/audit/get-duplicates-by-document-id-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    limit: limit
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { document_ids, limit, offset }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * get duplicates by docIds
-     *
-     * @param {string[]} docIds - docIds to query.
-     * @returns {Promise<any>} Response from the server.
+     * List missing information
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-list-missing-information
      */
-
-    public async getDuplicateInformationByDocuments(docIds: string[]): Promise<any> {
+    public async listMissingInformation(limit: number = 200, offset: number = 0): Promise<any[]> {
         try {
             const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicate-information-list-by-ids`,
+                url: `${this.baseUrl}api/audit/list-missing-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    docIds: docIds
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-
-    /**
-     * get conflicts by docIds
-     *
-     * @param {string[]} docIds - docIds to query.
-     * @returns {Promise<any>} Response from the server.
-     */
-
-    public async getConflictInformationByDocuments(docIds: string[]): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-conflict-information-list-by-ids`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    docIds: docIds
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { limit, offset }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 
     /**
-     * get duplicates by docIds
-     *
-     * @param limit
-     * @param offset
-     * @param documentName
-     * @returns {Promise<any>} Array of pairs of documents id like [[
-            "Sharepoint::016PKDMBPHECQGGYGDXZGX37RUD",
-            "Sharepoint::016PKDMBJQHF7P65T3KTLWOAM"
-        ]...]
-     */
-    public async getDuplicateInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicate-information-document-pair`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    limit: limit,
-                    offset: offset,
-                    documentName: documentName
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * get duplicates by docIds
-     *
-     * @param limit
-     * @param offset
-     * @param documentName
-     * @returns {Promise<any>} Array of pairs of documents id like [[
-            "Sharepoint::016PKDMBPHECQGGYGDXZGX37RUD",
-            "Sharepoint::016PKDMBJQHF7P65T3KTLWOAM"
-        ]...]
-     */
-    public async getConflictInformationDocumentPair(limit: number = 20, offset: number = 0, documentName: string = ""): Promise<any> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-conflict-information-document-pair`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    limit: limit,
-                    offset: offset,
-                    documentName: documentName
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
-        }
-    }
-
-    /**
-     * delete missing information
-     * @param id - id of duplicated information
-     * @returns {Promise<boolean>} True if success, False otherwise
+     * Delete missing information
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-delete-missing-information
      */
     public async deleteMissingInformation(id: string): Promise<boolean> {
         try {
@@ -593,13 +337,119 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/delete-missing-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    id: id
-                }
-            })
-            return request.data.response
-        } catch (e) {
-            throw e
+                data: { id }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count missing information
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-missing-information
+     */
+    public async countMissingInformation(): Promise<number> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-missing-information`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count conflicts per subject
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-subject
+     */
+    public async countConflictsPerSubject(): Promise<Record<string, number>> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count duplicates per subject
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-subject
+     */
+    public async countDuplicatesPerSubject(): Promise<Record<string, number>> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicate-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: {}
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Get conflicts by subject
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflict-information-by-subject
+     */
+    public async getConflictsBySubject(subject?: string, offset: number = 0, limit: number = 50): Promise<Anomaly[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-conflict-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: { subject, offset, limit }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Get duplicates by subject
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicate-information-by-subject
+     */
+    public async getDuplicatesBySubject(subject?: string, offset: number = 0, limit: number = 50): Promise<Anomaly[]> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/get-duplicate-information-by-subject`,
+                method: 'POST',
+                headers: this.headers,
+                data: { subject, offset, limit }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Check if document is audited
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-is-analyzed
+     */
+    public async checkIfDocumentIsAudited(document_id: string): Promise<boolean> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/document-is-analyzed`,
+                method: 'POST',
+                headers: this.headers,
+                data: { id: document_id }
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
         }
     }
 }

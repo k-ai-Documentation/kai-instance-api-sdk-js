@@ -1,5 +1,18 @@
 import axios from "axios";
 
+
+interface ConversationMessage {
+    from: "user" | "assistant";
+    content: string;
+    action: "SEARCH" | "QUALIFY_QUESTION";
+    datas?: any;
+}
+
+interface ChatbotMessage {
+    id: string;
+    message: string;
+}
+
 /**
  * This class provides methods to interact with the Chatbot API.
  */
@@ -24,10 +37,10 @@ export class Chatbot {
      * associated with the given ID. The response includes the conversation details with user and assistance.
      *
      * @param {string} id - The unique identifier of the conversation.
-     * @returns {Promise<any>} A promise resolving to the conversation data.
+     * @returns {Promise<ConversationMessage[]>} A promise resolving to the conversation data.
      * @throws {Error} Throws an error if the request fails.
      */
-    public async getFullConversation(id: string): Promise<any> {
+    public async getFullConversation(id: string): Promise<ConversationMessage[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/chatbot/get-conversation`,
@@ -37,7 +50,7 @@ export class Chatbot {
                     id: id
                 }
             })
-            return request.data.response
+            return request.data.response as ConversationMessage[]
         } catch (e) {
             throw e
         }
@@ -47,12 +60,10 @@ export class Chatbot {
      * 
      * @param {string} id The unique identifier of the conversation.
      * @param {string} user_message User message to be sent to the assistant.
-     * @param {boolean} multi_documents True if you want to have multiple documents sources in the answer.
-     * @param {string} user_id The identifier of the user.
-     * @returns {Promise<any>} A promise resolving to the conversation data.
+     * @returns {Promise<ChatbotMessage>} A promise resolving to the conversation data.
      * @throws {Error} Throws an error if the request fails.
      */
-    public async conversation(id: string = "", user_message: string, multi_documents: boolean, user_id: string = ""): Promise<any> {
+    public async conversation(id: string = "", user_message: string): Promise<ChatbotMessage> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/chatbot/message`,
@@ -60,12 +71,10 @@ export class Chatbot {
                 headers: this.headers,
                 data: {
                     id: id,
-                    user_message: user_message,
-                    multi_documents: multi_documents,
-                    user_id: user_id,
+                    user_message: user_message
                 }
             })
-            return request.data.response
+            return request.data.response as ChatbotMessage
         } catch (e) {
             throw e
         }
