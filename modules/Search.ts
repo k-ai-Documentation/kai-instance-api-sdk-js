@@ -25,7 +25,7 @@ export interface SearchLog {
  * Represents a message in a conversation.
  */
 export interface ConversationMessage {
-    from_: 'user' | 'assistant';
+    from: 'user' | 'assistant';
     message: string;
 }
 
