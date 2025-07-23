@@ -9,7 +9,6 @@ import { Orchestrator } from "./modules/Orchestrator";
 import { Document } from "./modules/Document";
 
 export interface KaiStudioCredentials {
-    organizationId?: any,
     instanceId?: any,
     apiKey?: any,
     host?: any
@@ -42,7 +41,7 @@ export class KaiStudio {
         this.credentials = credentials
         let headers = {}, baseUrl = ''
 
-        if (this.credentials.organizationId && this.credentials.instanceId && this.credentials.apiKey) {
+        if (this.credentials.instanceId && this.credentials.apiKey) {
             headers = {
                 'instance-id': this.credentials.instanceId,
                 'api-key': this.credentials.apiKey
