@@ -117,9 +117,10 @@ export class Document {
                 url: `${this.baseUrl}api/document/download`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id: documentId }
+                data: { id: documentId },
+                responseType: 'arraybuffer'
             });
-            return request.data.file;
+            return request.data;
         } catch (err) {
             throw err;
         }
