@@ -2,9 +2,7 @@
 
 ## Introduction
 
-SDK js/ts enables developers to efficiently manage files, instance, perform searches, handle thematic content, and
-conduct audits. This toolkit is designed to streamline the integration of complex functionalities into js/ts-based
-projects.
+SDK js/ts enables developers to efficiently perform searches, handle thematic content, and conduct audits. This toolkit is designed to streamline the integration of complex functionalities into js/ts-based projects.
 
 ## Installation
 
@@ -21,16 +19,15 @@ Here's a simple example to get you started with the SDK. This example demonstrat
 perform basic operations:
 
 ```js
-import {KaiStudio} from "sdk-js"
+import {KaiStudioInstance} from "sdk-js"
 
-// for saas user
+// for saas KaiStudioInstance
 const kaiSearch = new KaiStudio({
-    organizationId: process.env.VUE_APP_ORGANIZATION_ID,
     instanceId: process.env.VUE_APP_INSTANCE_ID,
     apiKey: process.env.VUE_APP_API_KEY
 })
 // for premise user
-const kaiSearch = new KaiStudio({host: process.env.VUE_APP_HOST, apiKey: process.env.VUE_APP_HOST})
+const kaiSearch = new KaiStudioInstance({host: process.env.VUE_APP_HOST, apiKey: process.env.VUE_APP_HOST})
 
 // send your search request
 const request = await kaiSearch.search().query("YOUR QUESTION HERE", "");
@@ -41,16 +38,15 @@ console.log(request)
 
 There are two type of versions: SaaS version and Premise version.
 
-SaaS version means you are using the service provided by Kai with cloud service. In this case, you will need 3 keys (
-organizationId, instanceId, apiKey) to initialize kaiStudio. Please refer to the following code in [index.ts](index.ts):
+SaaS version means you are using the service provided by Kai with cloud service. In this case, you will need 2 keys (instanceId, apiKey) to initialize kaiStudio. Please refer to the following code in [index.ts](index.ts):
 
 ```js
-if (this.credentials.organizationId && this.credentials.instanceId && this.credentials.apiKey) {
+if (this.credentials.instanceId && this.credentials.apiKey) {
     headers = {
         'api-key': this.credentials.apiKey
     }
 
-    baseUrl = `https://${this.credentials.organizationId}.kai-studio.ai/${this.credentials.instanceId}/`
+    baseUrl = `https://app.kai-studio.ai/`
 }
 ```
 
@@ -58,7 +54,7 @@ Premise version means you are using the service in your local server in your ent
 host and api key (optional) to initialize kaiStudio. Please refer to the following code in [index.ts](index.ts):
 
 ```js
-if (this.credentials.host) {
+if (this.credentials.host && this.credentials.apiKey) {
     baseUrl = this.credentials.host
     if (this.credentials.apiKey) {
         headers = {
@@ -70,205 +66,191 @@ if (this.credentials.host) {
 
 ---
 
-There are 5 modules in the SDK:
+There are 6 modules in the SDK:
 
-| [Core](#core) | [Audit](#audit) | [ManageInstance](#manageinstance) | [SemanticGraph](#semanticgraph) | [Search](#search) |
+| [Document](#document) | [Audit](#audit) | [Orchestrator](#orchestrator) | [SemanticGraph](#semanticgraph) | [Search](#search) |
 [Chatbot](#chatbot) |
 
-### Core
+### Document
 
-[Core.ts](modules/Core.ts) provides methods for querying the status of documents.
+[Document.ts](modules/Document.ts) provides methods for managing documents.
 
-- `countDocuments`: Get number of documents analyzed
-- `countDetectedDocuments`: Get number of detected documents
-- `countIndexableDocuments`: Get number of indexable documents
-- `countIndexedDocuments`: Get number of indexed documents
-- `countInProgressIndexationDocuments`: Get number of in-progress indexation documents
-- `countDocumentsByState`: Get number of documents by state  
-  > state: (optional) state of the document you want to get back, if not set, returns all docs
-- `listDocs`: List documents with state and pagination  
-  > limit: number of content to return  
-  > offset: number of content to skip before starting to collect the result set  
-  > state: (optional) state of the document
-- `downloadFile`: Download file  
-  > fileId: document id
-- `indexNewOrUpdatedDocument`: Index only new/updated/removed documents
-- `listIndexedDocuments`: List indexed documents  
-  > limit: number of content to return  
-  > offset: number of content to skip before starting to collect the result set
-- `lastIndexationBeginTime`: Get last indexation begin time
-- `lastIndexationEndTime`: Get last indexation end time
-- `checkPendingJob`: Get information about instance background jobs in progress
-- `getDocumentById`: Get document by id
-  > docId: document id
-- `getDocsIds`: Get documents by list of documents ids
-  > docIds: list of documents ids
-  > limit: number of content to return
+- `listDocuments`: list all documents
+  > offset: number of results to skip (default 0)
+  > limit: maximum number of results to return (default 20)
+  > state: optional document state filter
 
-For example:
+- `getDocumentDetail`: get a document by its ID
+  > id: ID of the document to retrieve
 
-```js
-let core = kaiStudio.core()
-core.countDocuments().then(response => {
-    console.log("COUNT DOCUMENTS:")
-    console.log(response)
-})
+- `countDocuments`: count the total number of documents
+  > state: optional document state filter
+
+- `downloadFile`: download a document file by its ID
+  > documentId: ID of the document to download
+
+- `docsByIds`: get document information for multiple document IDs
+  > ids: array of document IDs to retrieve
+  > offset: number of results to skip (default 0)
+  > limit: maximum number of results to return (default 20)
+
+Example:
+
+```typescript
+const document = kaiStudioInstance.document();
+
+// List documents
+const docs = await document.listDocuments(0, 20, 'INDEXED');
+console.log(`Found ${docs.length} documents`);
 ```
 
 ---
 
 ### Audit
 
-[KMAudit.ts](modules/KMAudit.ts) provides methods for auditing files.
+[KMAudit.ts](modules/KMAudit.ts) provides methods for auditing and managing anomalies in documents.
 
-- `getConflictInformation`: Get conflict information  
-  > limit: number of content to return
-  >offset: number of content to skip before starting to collect the result set
-  >query: search query
-  >state: state of the conflict information
-  >documentName: name of the document to filter
-- `getDuplicatedInformation`: Get duplicated information  
-  > limit: number of content to return
-  >offset: number of content to skip before starting to collect the result set
-  >query: search query
-  >state: state of the duplicated information
-  >documentName: name of the document to filter
-- `getDocumentsToManageList`: List documents containing conflicts or duplicates  
-  > limit: number of content to return
-  >offset: number of content to skip before starting to collect the result set
-- `getDocumentIdsToManageList`: List document IDs containing conflicts or duplicates
-- `getMissingSubjectList`: List missing subjects  
-  > limit: number of content to return
-  >offset: number of content to skip before starting to collect the result set
-- `countMissingSubjects`: Count missing subjects
-- `countDuplicatedInformation`: Count duplicated information
-- `countConflictInformation`: Count conflict information
-- `getAnomaliesForDoc`: Get anomalies (conflicts and duplicates) for a document  
-  > docId: document id
-  > limit: number of content to return
-  > offset: number of content to skip before starting to collect the result set
-- `conflictInformationSetState`: Set the state for a conflict information  
-  > id: id of the conflict information
-  > state: state of the conflict information
-- `duplicatedInformationSetState`: Set the state for a duplicated information  
-  > id: id of the duplicated information
-  > state: state of the duplicated information
-- `countConflictByDate`: Count conflicts within a date range  
-  > beginDate: begin date
-  > endDate: end date
-  > state: state of the conflict information
-- `countDuplicateByDate`: Count duplicates within a date range  
-  > beginDate: begin date
-  > endDate: end date
-  > state: state of the duplicated information
-- `getConflictInformationBySubject`: Get conflict information by subject  
-  > subject: subject of conflict information
-  > limit: number of content to return
-  > offset: number of content to skip before starting to collect the result set
-- `countConflictInformationBySubject`: Count conflicts grouped by subject
-  > limit: get top limit subjects
-- `getDuplicateInformationBySubject`: Get duplicate information by subject  
-  > subject: subject of duplicate information
-  > limit: number of content to return
-  > offset: number of content to skip before starting to collect the result set
-- `countDuplicatedInformationBySubject`: Count duplicates grouped by subject
-  > limit: get top limit subjects
-- `getDuplicateInformationByDocuments`: Get duplicates by document IDs  
-  > docIds: list of document IDs
-- `getConflictInformationByDocuments`: Get conflicts by document IDs  
-  > docIds: list of document IDs
-- `getDuplicateInformationDocumentPair`: Get duplicate document pairs  
-  > limit: number of content to return
-  > offset: number of content to skip before starting to collect the result set
-  > documentName: name of the document
-- `getConflictInformationDocumentPair`: Get conflict document pairs  
-  > limit: number of content to return
-  > offset: number of content to skip before starting to collect the result set
-  > documentName: name of the document
-- `deleteMissingInformation`: Delete missing information
-  > id: id of the missing information
+- `listConflicts`: Get conflict information  
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+  > query: optional search query
+  > document_name: optional document name to filter
+  > state: optional state filter (AnomalyState)
 
-For example:
+- `listDuplicates`: Get duplicated information  
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+  > query: optional search query
+  > document_name: optional document name to filter
+  > state: optional state filter (AnomalyState)
 
-```js
-let auditInstance = kaiStudio.auditInstance()
-auditInstance.getConflictInformation(10, 0).then(response => {
-    console.log("CONFLICT INFORMATION:")
-    console.log(response)
-})
-```
+- `countAnomaliesPerDocument`: List documents with counts of conflicts and duplicates  
+  > limit: maximum number of results to return (default 20)
+  > offset: number of results to skip (default 0)
 
----
+- `listMissingInformation`: List missing information  
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
 
-### ManageInstance
+- `countMissingInformation`: Count missing information entries
+- `countDuplicates`: Count duplicated information
+- `countConflicts`: Count conflict information
 
-[ManageInstance.ts](modules/ManageInstance.ts) provides methods for managing instances.
+- `getAnomaliesForDocument`: Get anomalies for a document  
+  > document_id: ID of the document to analyze
 
-- `getGlobalHealth`: Get global health
-- `isApiAlive`: Check if API is alive
-- `generateNewApiKey`: Generate a new API key
-- `updateName`: Update the instance name  
-  > name: new name for the instance
-- `deploy`: Deploy an instance
-- `delete`: Delete an instance
-- `addKb`: Add a knowledge base to the instance  
-  > type: type of knowledge base  
-  > options: configuration options  
-  > searchGoal: search goal associated with the KB
-- `setPlayground`: Set playground types for the instance  
-  > typeList: array of playground types
-- `updateKb`: Update a knowledge base  
-  > id: ID of the knowledge base  
-  > options: updated configuration options  
-  > searchGoal: updated search goal
-- `removeKb`: Remove a knowledge base from the instance  
-  > id: ID of the knowledge base
-- `getVersion`: Get API version
+- `updateConflictState`: Set the state for conflict information  
+  > id: ID of the conflict information
+  > state: state to set (AnomalyState)
+
+- `updateDuplicateState`: Set the state for duplicated information  
+  > id: ID of the duplicated information
+  > state: state to set (AnomalyState)
+
+- `countConflictsForPeriod`: Count conflicts within a date range  
+  > begin_date: start date for the period
+  > end_date: end date for the period
+  > state: optional state filter
+
+- `countDuplicatesForPeriod`: Count duplicates within a date range  
+  > begin_date: start date for the period
+  > end_date: end date for the period
+  > state: optional state filter
+
+- `getConflictsBySubject`: Get conflict information by subject  
+  > subject: optional subject name to filter by
+  > offset: number of results to skip (default 0)
+  > limit: maximum number of results to return (default 50)
+
+- `countConflictsPerSubject`: Count conflicts grouped by subject
+
+- `getDuplicatesBySubject`: Get duplicate information by subject  
+  > subject: optional subject name to filter by
+  > offset: number of results to skip (default 0)
+  > limit: maximum number of results to return (default 50)
+
+- `countDuplicatesPerSubject`: Count duplicates grouped by subject
+
+- `getConflictsByDocumentPair`: Get conflicts between specific documents  
+  > document_ids: array of document IDs to analyze
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+
+- `getDuplicatesByDocumentPair`: Get duplicates between specific documents  
+  > document_ids: array of document IDs to analyze
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+
+- `getConflictDocumentPairs`: Get conflict document pairs  
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+  > document_name: optional document name to filter
+
+- `getDuplicateDocumentPairs`: Get duplicate document pairs  
+  > limit: maximum number of results to return (default 200)
+  > offset: number of results to skip (default 0)
+  > document_name: optional document name to filter
+
+- `deleteMissingInformation`: Delete missing information entry
+  > id: ID of the missing information entry to delete
+
+- `checkIfDocumentIsAudited`: Check if a document has been analyzed
+  > document_id: ID of the document to check
 
 For example:
 
 ```js
-let manageInstance = kaiStudio.manageInstance()
-manageInstance.getGlobalHealth().then(response => {
-    console.log("GET GLOBAL HEALTH:")
-    console.log(response)
-})
+
+const audit = kaiStudioInstance.audit();
+
+// List conflicts
+audit.listConflicts(10, 0).then(conflicts => {
+    console.log("CONFLICTS FOUND:", conflicts.length);
+    console.log(conflicts);
+});
 ```
 
 ---
 
 ### Search
 
-[Search.ts](modules/Search.ts) provides methods for searching.
+[Search.ts](modules/Search.ts) provides methods for searching and retrieving search analytics.
 
 - `query`: Make a search on the semantic index  
   > query: query to search on the semantic index  
-  > user: (optional) user identifier  
-  > impersonate: name a profile to imitate the style of answer (e.g., "Knowledge manager")  
-  > multiDocuments: true to search across multiple documents  
-  > needFollowingQuestions: true to get follow-up questions
-- `countDoneRequests`: Count number of calls on search (`/query`) endpoint
-- `countAnsweredDoneRequests`: Count number of calls on search (`/query`) endpoint where KAI found an answer
-- `listQuestionsAsked`: Get requests made to the API  
-  > offset: number of content to skip before starting to collect the result set  
-  > limit: number of content to return
-- `identifySpecificDocument`: Identify a concise question following the user needs and documents from knowledge base  
-  > conversation: array of conversation messages, each with `{ from: 'user' | 'assistant', message: string }`
-- `countSearchNumberByDate`: Count search requests within a date range  
-  > beginDate: start date (e.g., "2025-01-23")  
-  > endDate: end date (e.g., "2025-01-29")
+  > user: (optional) user identifier to log for this query
+
+- `countDoneRequests`: Count number of search requests made to the API
+
+- `countAnsweredDoneRequests`: Count number of search requests that received answers
+
+- `getRequestsToApi`: Get a list of search queries made to the API  
+  > limit: maximum number of results to return  
+  > offset: number of results to skip
+
+- `countSearchByDate`: Count search requests within a date range  
+  > beginDate: start date of the period (e.g., "2025-01-23")  
+  > endDate: end date of the period (e.g., "2025-01-29")
+
 - `countAnsweredSearchByDate`: Count answered search requests within a date range  
-  > beginDate: start date  
-  > endDate: end date
+  > beginDate: start date of the period  
+  > endDate: end date of the period
 
-For example:
+Example:
 
-```js
-let search = kaiStudio.search()
-search.query("what is the history of France TV?", "userid", "", false, true).then(response => {
-    console.log("SEARCH QUERY:")
-    console.log(response)
-})
+```typescript
+
+const search = kaiStudioInstance.search();
+
+// Make a search query
+search.query("How to configure the system?", "user id").then(result => {
+  console.log(`Answer: ${result.answer}`);
+});
+
+// Get search analytics
+search.countDoneRequests().then(count => {
+  console.log(`Total searches: ${count}`);
+});
 ```
 
 ---
@@ -280,18 +262,18 @@ search.query("what is the history of France TV?", "userid", "", false, true).the
 - `getNodes`: List all generated semantic nodes  
   > limit: limit of elements returned  
   > offset: begin listing with this offset
-- `getLinkedNodes`: Get all linked nodes of one selected node  
+- `linkedNodesById`: Get all linked nodes of one selected node  
   > id: id of the reference node
 - `getNodeByLabel`: Get all nodes involved by the label tag  
   > label: label tag
-- `detectApproximalNodes`: Identify nodes that can be used to define the semantic context of the query  
+- `identifyNodes`: Identify nodes that can be used to define the semantic context of the query  
   > query: query searched  
   > need_documents_content: whether response needs document content
 
 For example:
 
 ```js
-let semantic = kaiStudio.semanticGraph()
+let semantic = KaiStudioInstance.semanticGraph()
 semantic.getNodes(10, 0).then(response => {
     console.log("GET NODES:")
     console.log(response)
@@ -309,13 +291,11 @@ semantic.getNodes(10, 0).then(response => {
 - `conversation`: Send a user message and get a chatbot response  
   > id: (string) conversation id, for first message no id needed  
   > user_message: (string) user's last message  
-  > multi_documents: (boolean) search with multiple documents  
-  > user_id: (string, optional) user id to identify the user question in logs
 
 For example:
 
 ```js
-let chatbot = kaiStudio.chatbot()
+let chatbot = KaiStudioInstance.chatbot()
 chatbot.getFullConversation("abcdedfg").then(response => {
     console.log("FULL CONVERSATION: ")
     console.log(response)
@@ -336,8 +316,6 @@ We have 7 states for a document:
 'ON_INDEXATION', // document is in indexation progress
 'INDEXED' // document is fully indexed
 ```
-
-<u>**For more examples, you can check the [example.ts](example.ts) file.**</u>
 
 ## Contributing
 
