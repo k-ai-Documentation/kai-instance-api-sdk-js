@@ -43,6 +43,7 @@ SaaS version means you are using the service provided by Kai with cloud service.
 ```js
 if (this.credentials.instanceId && this.credentials.apiKey) {
     headers = {
+        'instance-id': this.credentials.instanceId,
         'api-key': this.credentials.apiKey
     }
 
@@ -54,7 +55,7 @@ Premise version means you are using the service in your local server in your ent
 host and api key (optional) to initialize kaiStudio. Please refer to the following code in [index.ts](index.ts):
 
 ```js
-if (this.credentials.host && this.credentials.apiKey) {
+if (this.credentials.host) {
     baseUrl = this.credentials.host
     if (this.credentials.apiKey) {
         headers = {
