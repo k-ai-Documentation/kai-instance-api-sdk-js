@@ -1,9 +1,6 @@
-import {FileInstance} from "./modules/FileInstance";
-import {ManageInstance} from "./modules/ManageInstance";
 import {Search} from "./modules/Search";
 import {KMAudit} from "./modules/KMAudit";
 import {SemanticGraph} from "./modules/SemanticGraph";
-// import {Core} from "./modules/Core";
 import {Chatbot} from "./modules/Chatbot";
 import { Orchestrator } from "./modules/Orchestrator";
 import { Document } from "./modules/Document";
@@ -28,11 +25,8 @@ export class KaiStudio {
 
     private readonly credentials: KaiStudioCredentials;
     private readonly _search: Search;
-    private readonly _fileInstance: FileInstance;
-    private readonly _manageInstance: ManageInstance;
     private readonly _auditInstance: KMAudit;
     private readonly _semanticGraph: SemanticGraph;
-    // private readonly _core: Core;
     private readonly _chatbot: Chatbot;
     private readonly _orchestrator: Orchestrator;
     private readonly _document: Document;
@@ -64,9 +58,6 @@ export class KaiStudio {
         this._search = new Search(headers, baseUrl)
         this._auditInstance = new KMAudit(headers, baseUrl)
         this._semanticGraph = new SemanticGraph(headers, baseUrl)
-        this._manageInstance = new ManageInstance(headers)
-        this._fileInstance = new FileInstance(headers)
-        // this._core = new Core(headers, baseUrl)
         this._chatbot = new Chatbot(headers, baseUrl)
         this._orchestrator = new Orchestrator(headers, baseUrl)
         this._document = new Document(headers, baseUrl)
@@ -80,14 +71,6 @@ export class KaiStudio {
         return this._search
     }
 
-    public fileInstance(): FileInstance {
-        return this._fileInstance
-    }
-
-    public manageInstance(): ManageInstance {
-        return this._manageInstance
-    }
-
     public auditInstance(): KMAudit {
         return this._auditInstance
     }
@@ -95,10 +78,6 @@ export class KaiStudio {
     public semanticGraph(): SemanticGraph {
         return this._semanticGraph
     }
-
-    // public core(): Core {
-    //     return this._core
-    // }
 
     public chatbot(): Chatbot {
         return this._chatbot
