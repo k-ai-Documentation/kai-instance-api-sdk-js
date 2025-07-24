@@ -21,7 +21,7 @@ export enum State {
     PARSING_ERROR = 'PARSING_ERROR'
 }
 
-export class KaiStudio {
+export class KaiStudioInstance {
 
     private readonly credentials: KaiStudioCredentials;
     private readonly _search: Search;
