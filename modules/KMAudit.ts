@@ -169,13 +169,16 @@ export class KMAudit {
      * Count anomalies per document
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
      */
-    public async countAnomaliesPerDocument(): Promise<Record<string, Record<string, number>>> {
+    public async countAnomaliesPerDocument(limit: number = 20, offset: number = 0): Promise<Record<string, Record<string, number>>> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/document-ids-to-manage`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {
+                    limit,
+                    offset
+                }
             });
             return request.data.response;
         } catch (err) {
