@@ -8,7 +8,8 @@ import { Document } from "./modules/Document";
 export interface KaiStudioCredentials {
     instanceId?: any,
     apiKey?: any,
-    host?: any
+    host?: any,
+    Authorization?: string
 }
 
 export enum State {
@@ -36,10 +37,14 @@ export class KaiStudioInstance {
         let headers = {}, baseUrl = ''
 
         if (this.credentials.instanceId && this.credentials.apiKey) {
-            headers = {
+            headers = this.credentials.Authorization ? { //for local dev test
+                'Authorization': this.credentials.Authorization,
                 'instance-id': this.credentials.instanceId,
                 'api-key': this.credentials.apiKey
-            }
+            } : { //for saas users
+                'instance-id': this.credentials.instanceId,
+                'api-key': this.credentials.apiKey
+            } 
 
             baseUrl = import.meta.env.VITE_APP_API_URL ?? `https://api.kai-studio.ai/`
         }
