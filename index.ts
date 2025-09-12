@@ -52,11 +52,11 @@ export class KaiStudioInstance {
 
         if (this.credentials.host) {
             baseUrl = this.credentials.host
-            if (this.credentials.instanceId && this.credentials.apiKey) {
-                headers = {
-                    'api-key': this.credentials.apiKey,
-                    'instance-id': this.credentials.instanceId
-                }
+            if (this.credentials.apiKey) {
+                headers['api-key'] = this.credentials.apiKey
+            }
+            if (this.credentials.instanceId ) {
+                headers['instance-id'] = this.credentials.instanceId
             }
         }
 
