@@ -46,7 +46,8 @@ export class KaiStudioInstance {
                 'api-key': this.credentials.apiKey
             } 
 
-            baseUrl = import.meta.env.VITE_APP_API_URL ?? `https://api.kai-studio.ai/`
+            baseUrl = process.env.VITE_APP_API_URL ?? import.meta.env.VITE_APP_API_URL ?? `https://api.kai-studio.ai/`
+
         }
 
         if (this.credentials.host) {
