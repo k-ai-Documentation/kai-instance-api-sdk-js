@@ -2,8 +2,8 @@ import {Search} from "./modules/Search";
 import {KMAudit} from "./modules/KMAudit";
 import {SemanticGraph} from "./modules/SemanticGraph";
 import {Chatbot} from "./modules/Chatbot";
-import { Orchestrator } from "./modules/Orchestrator";
-import { Document } from "./modules/Document";
+import {Orchestrator} from "./modules/Orchestrator";
+import {Document} from "./modules/Document";
 
 export interface KaiStudioCredentials {
     instanceId?: any,
@@ -44,17 +44,19 @@ export class KaiStudioInstance {
             } : { //for saas users
                 'instance-id': this.credentials.instanceId,
                 'api-key': this.credentials.apiKey
-            } 
+            }
 
             baseUrl = import.meta.env.VITE_APP_API_URL ?? `https://api.kai-studio.ai/`
         }
 
         if (this.credentials.host) {
             baseUrl = this.credentials.host
+            headers = {}
             if (this.credentials.apiKey) {
-                headers = {
-                    'api-key': this.credentials.apiKey
-                }
+                headers['api-key'] = this.credentials.apiKey
+            }
+            if (this.credentials.instanceId) {
+                headers['instance-id'] = this.credentials.instanceId
             }
         }
 
