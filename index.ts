@@ -48,10 +48,6 @@ export class KaiStudioInstance {
 
             baseUrl = `https://api.kai-studio.ai/`
 
-            if (typeof process !== "undefined" && process.env.VITE_APP_API_URL) {
-                baseUrl = process.env.VITE_APP_API_URL
-            }
-
             if (typeof import.meta !== "undefined" && import.meta.env.VITE_APP_API_URL) {
                 baseUrl = import.meta.env.VITE_APP_API_URL
             }
