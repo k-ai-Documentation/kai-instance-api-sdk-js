@@ -10,7 +10,7 @@ export interface KaiStudioCredentials {
     apiKey?: any,
     host?: any,
     Authorization?: string,
-    proxyHost?: string,
+    apiHost?: string,
 }
 
 export enum State {
@@ -64,8 +64,8 @@ export class KaiStudioInstance {
             if (credentials.instanceId) headers["instance-id"] = credentials.instanceId;
         }
 
-        if (credentials.proxyHost) {
-            headers["proxy-host"] = credentials.proxyHost;
+        if (credentials.apiHost) {
+            headers["api-host"] = credentials.apiHost;
         }
 
         return headers;
