@@ -47,8 +47,8 @@ export class KaiStudioInstance {
         this._document = new Document(headers, baseUrl);
     }
 
-    private buildHeaders(credentials: KaiStudioCredentials): any {
-        const headers: {} = {};
+    private buildHeaders(credentials: KaiStudioCredentials): Record<string, string> {
+        const headers: Record<string, string> = {};
 
         if (credentials.instanceId && credentials.apiKey) {
             headers["instance-id"] = credentials.instanceId;
