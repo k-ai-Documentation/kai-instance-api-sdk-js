@@ -9,7 +9,8 @@ export interface KaiStudioCredentials {
     instanceId?: any,
     apiKey?: any,
     host?: any,
-    Authorization?: string
+    Authorization?: string,
+    proxyHost?: string,
 }
 
 export enum State {
@@ -24,64 +25,62 @@ export enum State {
 
 export class KaiStudioInstance {
 
-    private readonly credentials: KaiStudioCredentials;
-    private readonly _search: Search;
-    private readonly _auditInstance: KMAudit;
-    private readonly _semanticGraph: SemanticGraph;
-    private readonly _chatbot: Chatbot;
-    private readonly _orchestrator: Orchestrator;
-    private readonly _document: Document;
+    private credentials: KaiStudioCredentials;
+    private _search: Search;
+    private _auditInstance: KMAudit;
+    private _semanticGraph: SemanticGraph;
+    private _chatbot: Chatbot;
+    private _orchestrator: Orchestrator;
+    private _document: Document;
 
     constructor(credentials: KaiStudioCredentials) {
-        this.credentials = credentials
-        let headers = {}, baseUrl = ''
+        this.credentials = credentials;
 
-        if (this.credentials.instanceId && this.credentials.apiKey) {
-            headers = this.credentials.Authorization ? { //for local dev test
-                'Authorization': this.credentials.Authorization,
-                'instance-id': this.credentials.instanceId,
-                'api-key': this.credentials.apiKey
-            } : { //for saas users
-                'instance-id': this.credentials.instanceId,
-                'api-key': this.credentials.apiKey
-            }
+        const headers = this.buildHeaders(credentials);
+        const baseUrl = this.resolveBaseUrl(credentials);
 
-            baseUrl = `https://api.kai-studio.ai/`
+        this._search = new Search(headers, baseUrl);
+        this._auditInstance = new KMAudit(headers, baseUrl);
+        this._semanticGraph = new SemanticGraph(headers, baseUrl);
+        this._chatbot = new Chatbot(headers, baseUrl);
+        this._orchestrator = new Orchestrator(headers, baseUrl);
+        this._document = new Document(headers, baseUrl);
+    }
 
-            if (typeof import.meta !== "undefined" && import.meta.env.VITE_APP_API_URL) {
-                baseUrl = import.meta.env.VITE_APP_API_URL
-            }
-        }
+    private buildHeaders(credentials: KaiStudioCredentials): any {
+        const headers: {} = {};
 
-        if (this.credentials.host) {
-            baseUrl = this.credentials.host
-            if (this.credentials.apiKey) {
-                headers = {
-                    "api-key": this.credentials.apiKey
-                }
-            }
+        if (credentials.instanceId && credentials.apiKey) {
+            headers["instance-id"] = credentials.instanceId;
+            headers["api-key"] = credentials.apiKey;
 
-            if (this.credentials.instanceId) {
-                headers = {
-                    "instance-id": this.credentials.instanceId
-                }
-            }
-
-            if (this.credentials.instanceId && this.credentials.apiKey) {
-                headers = {
-                    "api-key": this.credentials.apiKey,
-                    "instance-id": this.credentials.instanceId
-                }
+            if (credentials.Authorization) {
+                headers["Authorization"] = credentials.Authorization;
             }
         }
 
+        if (credentials.host) {
+            if (credentials.apiKey) headers["api-key"] = credentials.apiKey;
+            if (credentials.instanceId) headers["instance-id"] = credentials.instanceId;
+        }
 
-        this._search = new Search(headers, baseUrl)
-        this._auditInstance = new KMAudit(headers, baseUrl)
-        this._semanticGraph = new SemanticGraph(headers, baseUrl)
-        this._chatbot = new Chatbot(headers, baseUrl)
-        this._orchestrator = new Orchestrator(headers, baseUrl)
-        this._document = new Document(headers, baseUrl)
+        if (credentials.proxyHost) {
+            headers["proxy-host"] = credentials.proxyHost;
+        }
+
+        return headers;
+    }
+
+    private resolveBaseUrl(credentials: KaiStudioCredentials): string {
+        if (credentials.host) {
+            return credentials.host;
+        }
+
+        if (typeof import.meta !== "undefined" && import.meta.env.VITE_APP_API_URL) {
+            return import.meta.env.VITE_APP_API_URL;
+        }
+
+        return "https://api.kai-studio.ai/";
     }
 
     public getCredentials(): KaiStudioCredentials {
