@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 /**
  * AnomalyState
@@ -7,7 +7,7 @@ import axios from "axios";
 export enum AnomalyState {
     MANAGED = 'managed',
     IGNORED = 'ignored',
-    DETECTED = 'detected'
+    DETECTED = 'detected',
 }
 
 /**
@@ -40,6 +40,16 @@ export interface DocumentAnomalies {
     duplicated: Anomaly[];
 }
 
+export interface AnomalyTypeNumber {
+    subject: string;
+    count: number;
+    count_detected: number;
+    count_managed: number;
+    count_ignored: number;
+    count_redetected: number;
+    count_disappeared: number;
+}
+
 /**
  * Client for interacting with the audit API to manage conflicts, duplicates, and anomalies in documents.
  */
@@ -67,7 +77,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/conflict-information/set-state`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id, state }
+                data: { id, state },
             });
             return request.data.response;
         } catch (err) {
@@ -85,7 +95,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/duplicated-information/set-state`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id, state }
+                data: { id, state },
             });
             return request.data.response;
         } catch (err) {
@@ -103,7 +113,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-conflict-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {},
             });
             return request.data.response;
         } catch (err) {
@@ -121,7 +131,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-duplicated-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {},
             });
             return request.data.response;
         } catch (err) {
@@ -139,7 +149,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/conflict-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, query, document_name, state }
+                data: { limit, offset, query, document_name, state },
             });
             return request.data.response;
         } catch (err) {
@@ -157,7 +167,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/duplicated-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, query, document_name, state }
+                data: { limit, offset, query, document_name, state },
             });
             return request.data.response;
         } catch (err) {
@@ -177,8 +187,8 @@ export class KMAudit {
                 headers: this.headers,
                 data: {
                     limit,
-                    offset
-                }
+                    offset,
+                },
             });
             return request.data.response;
         } catch (err) {
@@ -196,7 +206,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-anomalies-for-document`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id: document_id }
+                data: { id: document_id },
             });
             return request.data.response;
         } catch (err) {
@@ -214,7 +224,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-conflict-by-date`,
                 method: 'POST',
                 headers: this.headers,
-                data: { begin_date, end_date, state }
+                data: { begin_date, end_date, state },
             });
             return request.data.response;
         } catch (err) {
@@ -232,7 +242,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-duplicate-by-date`,
                 method: 'POST',
                 headers: this.headers,
-                data: { begin_date, end_date, state }
+                data: { begin_date, end_date, state },
             });
             return request.data.response;
         } catch (err) {
@@ -250,7 +260,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-conflict-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, document_name }
+                data: { limit, offset, document_name },
             });
             return request.data.response;
         } catch (err) {
@@ -268,7 +278,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-duplicate-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, document_name }
+                data: { limit, offset, document_name },
             });
             return request.data.response;
         } catch (err) {
@@ -286,7 +296,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-conflicts-by-document-id-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { document_ids, limit, offset }
+                data: { document_ids, limit, offset },
             });
             return request.data.response;
         } catch (err) {
@@ -304,7 +314,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-duplicates-by-document-id-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { document_ids, limit, offset }
+                data: { document_ids, limit, offset },
             });
             return request.data.response;
         } catch (err) {
@@ -322,7 +332,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/list-missing-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset }
+                data: { limit, offset },
             });
             return request.data.response;
         } catch (err) {
@@ -340,7 +350,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/delete-missing-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id }
+                data: { id },
             });
             return request.data.response;
         } catch (err) {
@@ -358,7 +368,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-missing-information`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {},
             });
             return request.data.response;
         } catch (err) {
@@ -370,15 +380,25 @@ export class KMAudit {
      * Count conflicts per subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-subject
      */
-    public async countConflictsPerSubject(): Promise<Record<string, number>> {
+    public async countConflictsPerSubject(): Promise<AnomalyTypeNumber[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {},
             });
-            return request.data.response;
+            const convertedData = request.data.response.map((item: any) => ({
+                subject: item.subject,
+                count: parseInt(item.count),
+                count_detected: parseInt(item.count_detected),
+                count_managed: parseInt(item.count_managed),
+                count_ignored: parseInt(item.count_ignored),
+                count_redetected: parseInt(item.count_redetected),
+                count_disappeared: parseInt(item.count_disappeared),
+            }));
+
+            return convertedData;
         } catch (err) {
             throw err;
         }
@@ -388,15 +408,25 @@ export class KMAudit {
      * Count duplicates per subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-subject
      */
-    public async countDuplicatesPerSubject(): Promise<Record<string, number>> {
+    public async countDuplicatesPerSubject(): Promise<AnomalyTypeNumber[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-duplicate-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: {}
+                data: {},
             });
-            return request.data.response;
+            const convertedData = request.data.response.map((item: any) => ({
+                subject: item.subject,
+                count: parseInt(item.count),
+                count_detected: parseInt(item.count_detected),
+                count_managed: parseInt(item.count_managed),
+                count_ignored: parseInt(item.count_ignored),
+                count_redetected: parseInt(item.count_redetected),
+                count_disappeared: parseInt(item.count_disappeared),
+            }));
+
+            return convertedData;
         } catch (err) {
             throw err;
         }
@@ -412,7 +442,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-conflict-information-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: { subject, offset, limit }
+                data: { subject, offset, limit },
             });
             return request.data.response;
         } catch (err) {
@@ -430,7 +460,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/get-duplicate-information-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: { subject, offset, limit }
+                data: { subject, offset, limit },
             });
             return request.data.response;
         } catch (err) {
@@ -448,7 +478,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/document-is-analyzed`,
                 method: 'POST',
                 headers: this.headers,
-                data: { id: document_id }
+                data: { id: document_id },
             });
             return request.data.response;
         } catch (err) {
