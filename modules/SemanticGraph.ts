@@ -27,8 +27,8 @@ export interface SemanticNodeExtraproperties {
 
 export interface SemanticNode {
     id: string;
-    node1: string;
-    node2: string;
+    node_1: string;
+    node_2: string;
     edge: string;
     extraproperties: SemanticNodeExtraproperties;
 }
