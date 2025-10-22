@@ -8,6 +8,8 @@ export enum AnomalyState {
     MANAGED = 'managed',
     IGNORED = 'ignored',
     DETECTED = 'detected',
+    REDETECTED = 'redetected',
+    DISAPPEARED = 'disappeared'
 }
 
 /**
@@ -179,7 +181,7 @@ export class KMAudit {
      * Count anomalies per document
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
      */
-    public async countAnomaliesPerDocument(limit: number = 20, offset: number = 0): Promise<Record<string, Record<string, number>>> {
+    public async countAnomaliesPerDocument(limit: number = 20, offset: number = 0, document_ids?: string[]): Promise<Record<string, Record<string, number>>> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/document-ids-to-manage`,
@@ -198,7 +200,7 @@ export class KMAudit {
 
     /**
      * Get anomalies for a document
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-anomalies-for-document
      */
     public async getAnomaliesForDocument(document_id: string): Promise<DocumentAnomalies> {
         try {
@@ -380,7 +382,7 @@ export class KMAudit {
      * Count conflicts per subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-subject
      */
-    public async countConflictsPerSubject(): Promise<AnomalyTypeNumber[]> {
+    public async countConflictsPerSubject(document_ids?: string[]): Promise<AnomalyTypeNumber[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-by-subject`,
@@ -408,7 +410,7 @@ export class KMAudit {
      * Count duplicates per subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-subject
      */
-    public async countDuplicatesPerSubject(): Promise<AnomalyTypeNumber[]> {
+    public async countDuplicatesPerSubject(document_ids?: string[]): Promise<AnomalyTypeNumber[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-duplicate-by-subject`,
@@ -481,6 +483,40 @@ export class KMAudit {
                 data: { id: document_id },
             });
             return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Count conflicts by list of document id
+     */
+    public async countConflictsByDocumentId(document_ids: string[], state?: AnomalyState): Promise<number> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflict-by-document-ids`,
+                method: 'POST',
+                headers: this.headers,
+                data: { document_ids, state },
+            });
+            return parseInt(request.data.response);
+        } catch (err) {
+            throw err;
+        }
+    } 
+
+    /**
+     * Count duplicates by list of document id
+     */
+    public async countDuplicatesByDocumentId(document_ids: string[], state?: AnomalyState): Promise<number> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-duplicate-by-document-ids`,
+                method: 'POST',
+                headers: this.headers,
+                data: { document_ids, state },
+            });
+            return parseInt(request.data.response);
         } catch (err) {
             throw err;
         }
