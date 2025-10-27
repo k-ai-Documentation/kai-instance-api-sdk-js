@@ -190,6 +190,7 @@ export class KMAudit {
                 data: {
                     limit,
                     offset,
+                    document_ids
                 },
             });
             return request.data.response;
@@ -503,7 +504,7 @@ export class KMAudit {
         } catch (err) {
             throw err;
         }
-    } 
+    }
 
     /**
      * Count duplicates by list of document id
