@@ -407,7 +407,9 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-conflict-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: {},
+                data: {
+                    document_ids: document_ids || [],
+                },
             });
             const convertedData = request.data.response.map((item: any) => ({
                 subject: item.subject,
@@ -435,7 +437,9 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-duplicate-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: {},
+                data: {
+                    document_ids: document_ids || [],
+                },
             });
             const convertedData = request.data.response.map((item: any) => ({
                 subject: item.subject,
