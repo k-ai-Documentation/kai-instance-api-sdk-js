@@ -236,6 +236,24 @@ export class KMAudit {
     }
 
     /**
+     * Count conflicts for period
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-date
+     */
+    public async countConflictsByState(state: string): Promise<Record<string, Record<string, number>>> {
+        try {
+            const request = await axios({
+                url: `${this.baseUrl}api/audit/count-conflicts-by-state`,
+                method: 'POST',
+                headers: this.headers,
+                data: {state },
+            });
+            return request.data.response;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
      * Count duplicates for period
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-date
      */
