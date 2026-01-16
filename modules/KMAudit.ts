@@ -236,8 +236,8 @@ export class KMAudit {
     }
 
     /**
-     * Count conflicts for period
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-date
+     * Count conflicts by given state
+     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflicts-by-state
      */
     public async countConflictsByState(state: string): Promise<Record<string, Record<string, number>>> {
         try {
