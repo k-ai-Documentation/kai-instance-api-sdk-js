@@ -87,12 +87,14 @@ export class Document {
      * Count documents
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/documents#post-count-documents
      * @param state Optional document state filter
+     * @param documentIds Optional document documentIds
      * @returns Number of documents
      */
-    public async countDocuments(state?: string): Promise<number> {
+    public async countDocuments(state?: string, documentIds?: string[]): Promise<number> {
         try {
             const payload: any = {};
             if (state !== undefined) payload.state = state;
+            if (documentIds) payload.document_ids = documentIds;
             const request = await axios({
                 url: `${this.baseUrl}api/document/count-documents`,
                 method: 'POST',
