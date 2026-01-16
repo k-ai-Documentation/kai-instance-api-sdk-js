@@ -239,7 +239,7 @@ export class KMAudit {
      * Count conflicts by given state
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflicts-by-state
      */
-    public async countConflictsByState(state: string): Promise<Record<string, Record<string, number>>> {
+    public async countConflictsByState(state: string): Promise<number> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflicts-by-state`,
@@ -247,7 +247,7 @@ export class KMAudit {
                 headers: this.headers,
                 data: {state },
             });
-            return request.data.response;
+            return request.data.response ?? 0;
         } catch (err) {
             throw err;
         }
