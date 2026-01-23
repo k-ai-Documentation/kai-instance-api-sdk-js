@@ -275,13 +275,13 @@ export class KMAudit {
      * Get conflict document pairs
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflict-document-pair
      */
-    public async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string): Promise<any[]> {
+    public async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string): Promise<any[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-conflict-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, document_name },
+                data: { limit, offset, document_name, state}
             });
             return request.data.response;
         } catch (err) {
@@ -293,13 +293,13 @@ export class KMAudit {
      * Get duplicate document pairs
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicate-document-pair
      */
-    public async getDuplicateDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string): Promise<any[]> {
+    public async getDuplicateDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string): Promise<any[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-duplicate-document-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: { limit, offset, document_name },
+                data: { limit, offset, document_name, state}
             });
             return request.data.response;
         } catch (err) {
