@@ -408,10 +408,10 @@ export class KMAudit {
                 method: 'POST',
                 headers: this.headers,
                 data: {
-                    document_ids: document_ids || [],
+                    document_ids: document_ids
                 },
             });
-            const convertedData = request.data.response.map((item: any) => ({
+            return request.data.response.map((item: any) => ({
                 subject: item.subject,
                 count: parseInt(item.count),
                 count_detected: parseInt(item.count_detected),
@@ -420,8 +420,6 @@ export class KMAudit {
                 count_redetected: parseInt(item.count_redetected),
                 count_disappeared: parseInt(item.count_disappeared),
             }));
-
-            return convertedData;
         } catch (err) {
             throw err;
         }
