@@ -311,13 +311,13 @@ export class KMAudit {
      * Get conflicts by document pair
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflicts-by-document-id-pair
      */
-    public async getConflictsByDocumentPair(document_ids: string[], limit: number = 200, offset: number = 0): Promise<Anomaly[]> {
+    public async getConflictsByDocumentPair(document_ids: string[], limit: number = 200, offset: number = 0, state: string = ''): Promise<Anomaly[]> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-conflicts-by-document-id-pair`,
                 method: 'POST',
                 headers: this.headers,
-                data: {document_ids, limit, offset},
+                data: {document_ids, limit, offset, state},
             });
             return request.data.response;
         } catch (err) {
