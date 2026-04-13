@@ -13,7 +13,6 @@ export class Credentials implements KaiStudioCredentials {
 let credentials = new Credentials('', '');
 
 let kaiStudio = new KaiStudioInstance(credentials);
-let search = kaiStudio.search();
 let auditInstance = kaiStudio.auditInstance();
 let semanticGraph = kaiStudio.semanticGraph();
 let document = kaiStudio.document();

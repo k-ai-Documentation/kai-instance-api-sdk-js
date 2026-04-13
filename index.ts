@@ -1,4 +1,3 @@
-import {Search} from "./modules/Search";
 import {KMAudit} from "./modules/KMAudit";
 import {SemanticGraph} from "./modules/SemanticGraph";
 import {Chatbot} from "./modules/Chatbot";
@@ -26,7 +25,6 @@ export enum State {
 export class KaiStudioInstance {
 
     private credentials: KaiStudioCredentials;
-    private _search: Search;
     private _auditInstance: KMAudit;
     private _semanticGraph: SemanticGraph;
     private _chatbot: Chatbot;
@@ -39,7 +37,6 @@ export class KaiStudioInstance {
         const headers = this.buildHeaders(credentials);
         const baseUrl = this.resolveBaseUrl(credentials);
 
-        this._search = new Search(headers, baseUrl);
         this._auditInstance = new KMAudit(headers, baseUrl);
         this._semanticGraph = new SemanticGraph(headers, baseUrl);
         this._chatbot = new Chatbot(headers, baseUrl);
@@ -85,10 +82,6 @@ export class KaiStudioInstance {
 
     public getCredentials(): KaiStudioCredentials {
         return this.credentials
-    }
-
-    public search(): Search {
-        return this._search
     }
 
     public auditInstance(): KMAudit {
