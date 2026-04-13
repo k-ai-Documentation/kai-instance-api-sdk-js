@@ -21,7 +21,7 @@ export enum State {
     PARSING_ERROR = 'PARSING_ERROR'
 }
 
-export class KaiStudioInstance {
+export class KaiInstanceApi {
 
     private credentials: KaiStudioCredentials;
     private _auditInstance: KMAudit;

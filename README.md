@@ -19,15 +19,15 @@ Here's a simple example to get you started with the SDK. This example demonstrat
 perform basic operations:
 
 ```js
-import {KaiStudioInstance} from "sdk-js"
+import {KaiInstanceApi} from "sdk-js"
 
-// for saas KaiStudioInstance
+// for saas KaiInstanceApi
 const kaiSearch = new KaiStudio({
     instanceId: process.env.VUE_APP_INSTANCE_ID,
     apiKey: process.env.VUE_APP_API_KEY
 })
 // for premise user
-const kaiSearch = new KaiStudioInstance({host: process.env.VUE_APP_HOST, apiKey: process.env.VUE_APP_HOST})
+const kaiSearch = new KaiInstanceApi({host: process.env.VUE_APP_HOST, apiKey: process.env.VUE_APP_HOST})
 
 // send your search request
 const request = await kaiSearch.search().query("YOUR QUESTION HERE", "");
@@ -197,7 +197,7 @@ audit.listConflicts(10, 0).then(conflicts => {
 For example:
 
 ```js
-let semantic = KaiStudioInstance.semanticGraph()
+let semantic = KaiInstanceApi.semanticGraph()
 semantic.getNodes(10, 0).then(response => {
     console.log("GET NODES:")
     console.log(response)

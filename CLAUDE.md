@@ -24,13 +24,13 @@ There is no test suite configured (`npm test` exits with an error).
 
 This is a TypeScript SDK for Kai Studio (k-ai.ai), a knowledge management/AI search platform. The SDK wraps the Kai Studio REST API.
 
-**Entry point:** `index.ts` — exports `KaiStudioInstance` (the main class) and the `State` enum.
+**Entry point:** `index.ts` — exports `KaiInstanceApi` (the main class) and the `State` enum.
 
 **Instantiation pattern — two modes:**
 - **SaaS:** pass `{ instanceId, apiKey }` → sets `instance-id` and `api-key` headers, base URL defaults to `https://api.kai-studio.ai/`
 - **Premise:** pass `{ host, apiKey? }` → uses `host` as base URL, optional `api-key` header
 
-`KaiStudioInstance` constructs all four module clients at init time and exposes them via accessor methods.
+`KaiInstanceApi` constructs all four module clients at init time and exposes them via accessor methods.
 
 **Four modules** (`modules/`), all following the same pattern — constructor takes `(headers: object, baseUrl: string)`, all methods are `async` and use `axios` POST requests, returning `request.data.response`:
 
