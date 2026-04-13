@@ -1,6 +1,5 @@
 import {KMAudit} from "./modules/KMAudit";
 import {SemanticGraph} from "./modules/SemanticGraph";
-import {Chatbot} from "./modules/Chatbot";
 import {Orchestrator} from "./modules/Orchestrator";
 import {Document} from "./modules/Document";
 
@@ -27,7 +26,6 @@ export class KaiStudioInstance {
     private credentials: KaiStudioCredentials;
     private _auditInstance: KMAudit;
     private _semanticGraph: SemanticGraph;
-    private _chatbot: Chatbot;
     private _orchestrator: Orchestrator;
     private _document: Document;
 
@@ -39,7 +37,6 @@ export class KaiStudioInstance {
 
         this._auditInstance = new KMAudit(headers, baseUrl);
         this._semanticGraph = new SemanticGraph(headers, baseUrl);
-        this._chatbot = new Chatbot(headers, baseUrl);
         this._orchestrator = new Orchestrator(headers, baseUrl);
         this._document = new Document(headers, baseUrl);
     }
@@ -90,10 +87,6 @@ export class KaiStudioInstance {
 
     public semanticGraph(): SemanticGraph {
         return this._semanticGraph
-    }
-
-    public chatbot(): Chatbot {
-        return this._chatbot
     }
 
     public orchestrator(): Orchestrator {

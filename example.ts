@@ -17,7 +17,6 @@ let auditInstance = kaiStudio.auditInstance();
 let semanticGraph = kaiStudio.semanticGraph();
 let document = kaiStudio.document();
 let orchestrator = kaiStudio.orchestrator();
-let chatbot = kaiStudio.chatbot();
 
 // document
 document.listDocuments(0, 20, 'INDEXED').then((response) => {
