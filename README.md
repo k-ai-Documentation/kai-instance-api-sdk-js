@@ -67,10 +67,9 @@ if (this.credentials.host) {
 
 ---
 
-There are 6 modules in the SDK:
+There are 4 modules in the SDK:
 
-| [Document](#document) | [Audit](#audit) | [Orchestrator](#orchestrator) | [SemanticGraph](#semanticgraph) | [Search](#search) |
-[Chatbot](#chatbot) |
+| [Document](#document) | [Audit](#audit) | [Orchestrator](#orchestrator) | [SemanticGraph](#semanticgraph) |
 
 ### Document
 
@@ -109,7 +108,7 @@ console.log(`Found ${docs.length} documents`);
 
 ### Audit
 
-[KMAudit.ts](modules/KMAudit.ts) provides methods for auditing and managing anomalies in documents.
+[KMAudit.ts](modules/KMAudit.ts) provides methods for auditing and managing conflict anomalies in documents.
 
 - `listConflicts`: Get conflict information  
   > limit: maximum number of results to return (default 200)
@@ -118,24 +117,11 @@ console.log(`Found ${docs.length} documents`);
   > document_name: optional document name to filter
   > state: optional state filter (AnomalyState)
 
-- `listDuplicates`: Get duplicated information  
-  > limit: maximum number of results to return (default 200)
-  > offset: number of results to skip (default 0)
-  > query: optional search query
-  > document_name: optional document name to filter
-  > state: optional state filter (AnomalyState)
+- `countConflicts`: Count conflict information
 
-- `countAnomaliesPerDocument`: List documents with counts of conflicts and duplicates  
+- `countAnomaliesPerDocument`: List documents with counts of conflicts  
   > limit: maximum number of results to return (default 20)
   > offset: number of results to skip (default 0)
-
-- `listMissingInformation`: List missing information  
-  > limit: maximum number of results to return (default 200)
-  > offset: number of results to skip (default 0)
-
-- `countMissingInformation`: Count missing information entries
-- `countDuplicates`: Count duplicated information
-- `countConflicts`: Count conflict information
 
 - `getAnomaliesForDocument`: Get anomalies for a document  
   > document_id: ID of the document to analyze
@@ -144,113 +130,50 @@ console.log(`Found ${docs.length} documents`);
   > id: ID of the conflict information
   > state: state to set (AnomalyState)
 
-- `updateDuplicateState`: Set the state for duplicated information  
-  > id: ID of the duplicated information
-  > state: state to set (AnomalyState)
-
 - `countConflictsForPeriod`: Count conflicts within a date range  
   > begin_date: start date for the period
   > end_date: end date for the period
   > state: optional state filter
 
-- `countDuplicatesForPeriod`: Count duplicates within a date range  
-  > begin_date: start date for the period
-  > end_date: end date for the period
-  > state: optional state filter
+- `countConflictsByState`: Count conflicts by state  
+  > state: state to filter by
 
 - `getConflictsBySubject`: Get conflict information by subject  
   > subject: optional subject name to filter by
   > offset: number of results to skip (default 0)
   > limit: maximum number of results to return (default 50)
 
-- `countConflictsPerSubject`: Count conflicts grouped by subject
-
-- `getDuplicatesBySubject`: Get duplicate information by subject  
-  > subject: optional subject name to filter by
-  > offset: number of results to skip (default 0)
-  > limit: maximum number of results to return (default 50)
-
-- `countDuplicatesPerSubject`: Count duplicates grouped by subject
+- `countConflictsPerSubject`: Count conflicts grouped by subject  
+  > document_ids: optional array of document IDs to filter
 
 - `getConflictsByDocumentPair`: Get conflicts between specific documents  
   > document_ids: array of document IDs to analyze
   > limit: maximum number of results to return (default 200)
   > offset: number of results to skip (default 0)
-
-- `getDuplicatesByDocumentPair`: Get duplicates between specific documents  
-  > document_ids: array of document IDs to analyze
-  > limit: maximum number of results to return (default 200)
-  > offset: number of results to skip (default 0)
+  > state: optional state filter
 
 - `getConflictDocumentPairs`: Get conflict document pairs  
   > limit: maximum number of results to return (default 200)
   > offset: number of results to skip (default 0)
   > document_name: optional document name to filter
 
-- `getDuplicateDocumentPairs`: Get duplicate document pairs  
-  > limit: maximum number of results to return (default 200)
-  > offset: number of results to skip (default 0)
-  > document_name: optional document name to filter
+- `countConflictsByDocumentId`: Count conflicts for a list of document IDs  
+  > document_ids: array of document IDs
+  > state: optional state filter
 
-- `deleteMissingInformation`: Delete missing information entry
-  > id: ID of the missing information entry to delete
-
-- `checkIfDocumentIsAudited`: Check if a document has been analyzed
+- `checkIfDocumentIsAudited`: Check if a document has been analyzed  
   > document_id: ID of the document to check
 
 For example:
 
 ```js
 
-const audit = kaiStudioInstance.audit();
+const audit = kaiStudioInstance.auditInstance();
 
 // List conflicts
 audit.listConflicts(10, 0).then(conflicts => {
     console.log("CONFLICTS FOUND:", conflicts.length);
     console.log(conflicts);
-});
-```
-
----
-
-### Search
-
-[Search.ts](modules/Search.ts) provides methods for searching and retrieving search analytics.
-
-- `query`: Make a search on the semantic index  
-  > query: query to search on the semantic index  
-  > user: (optional) user identifier to log for this query
-
-- `countDoneRequests`: Count number of search requests made to the API
-
-- `countAnsweredDoneRequests`: Count number of search requests that received answers
-
-- `getRequestsToApi`: Get a list of search queries made to the API  
-  > limit: maximum number of results to return  
-  > offset: number of results to skip
-
-- `countSearchByDate`: Count search requests within a date range  
-  > beginDate: start date of the period (e.g., "2025-01-23")  
-  > endDate: end date of the period (e.g., "2025-01-29")
-
-- `countAnsweredSearchByDate`: Count answered search requests within a date range  
-  > beginDate: start date of the period  
-  > endDate: end date of the period
-
-Example:
-
-```typescript
-
-const search = kaiStudioInstance.search();
-
-// Make a search query
-search.query("How to configure the system?", "user id").then(result => {
-  console.log(`Answer: ${result.answer}`);
-});
-
-// Get search analytics
-search.countDoneRequests().then(count => {
-  console.log(`Total searches: ${count}`);
 });
 ```
 
@@ -277,28 +200,6 @@ For example:
 let semantic = KaiStudioInstance.semanticGraph()
 semantic.getNodes(10, 0).then(response => {
     console.log("GET NODES:")
-    console.log(response)
-})
-```
-
----
-
-### Chatbot
-
-[Chatbot.ts](modules/Chatbot.ts) provides methods for chatting.
-
-- `getFullConversation`: List all conversations of a given id  
-  > id: id of conversation
-- `conversation`: Send a user message and get a chatbot response  
-  > id: (string) conversation id, for first message no id needed  
-  > user_message: (string) user's last message  
-
-For example:
-
-```js
-let chatbot = KaiStudioInstance.chatbot()
-chatbot.getFullConversation("abcdedfg").then(response => {
-    console.log("FULL CONVERSATION: ")
     console.log(response)
 })
 ```
