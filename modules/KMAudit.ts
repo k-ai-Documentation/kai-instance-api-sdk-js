@@ -23,7 +23,7 @@ export interface AnomalyInformationDocument {
 
 /**
  * Anomaly
- * Structure for anomaly (conflict/duplicate)
+ * Structure for anomaly (conflict)
  */
 export interface Anomaly {
     id: string;
@@ -35,11 +35,10 @@ export interface Anomaly {
 
 /**
  * DocumentAnomalies
- * Structure for document anomalies (conflicts and duplicates)
+ * Structure for document anomalies
  */
 export interface DocumentAnomalies {
     conflicts: Anomaly[];
-    duplicated: Anomaly[];
 }
 
 export interface AnomalyTypeNumber {
@@ -53,7 +52,7 @@ export interface AnomalyTypeNumber {
 }
 
 /**
- * Client for interacting with the audit API to manage conflicts, duplicates, and anomalies in documents.
+ * Client for interacting with the audit API to manage conflicts and anomalies in documents.
  */
 export class KMAudit {
     private readonly baseUrl: string;
@@ -88,24 +87,6 @@ export class KMAudit {
     }
 
     /**
-     * Set duplicate state
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-duplicated-information-set-state
-     */
-    public async updateDuplicateState(id: string, state: AnomalyState): Promise<boolean> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/duplicated-information/set-state`,
-                method: 'POST',
-                headers: this.headers,
-                data: {id, state},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
      * Count conflicts
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-information
      */
@@ -113,24 +94,6 @@ export class KMAudit {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Count duplicates
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicated-information
-     */
-    public async countDuplicates(): Promise<number> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicated-information`,
                 method: 'POST',
                 headers: this.headers,
                 data: {},
@@ -160,24 +123,6 @@ export class KMAudit {
     }
 
     /**
-     * List duplicates
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-duplicated-information
-     */
-    public async listDuplicates(limit: number = 200, offset: number = 0, query?: string, document_name?: string, state?: AnomalyState): Promise<Anomaly[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/duplicated-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {limit, offset, query, document_name, state},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
      * Count anomalies per document
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-document-ids-to-manage
      */
@@ -187,11 +132,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/document-ids-to-manage`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    limit,
-                    offset,
-                    document_ids
-                },
+                data: {limit, offset, document_ids},
             });
             return request.data.response;
         } catch (err) {
@@ -254,24 +195,6 @@ export class KMAudit {
     }
 
     /**
-     * Count duplicates for period
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-date
-     */
-    public async countDuplicatesForPeriod(begin_date: string, end_date: string, state?: string): Promise<Record<string, Record<string, number>>> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicate-by-date`,
-                method: 'POST',
-                headers: this.headers,
-                data: {begin_date, end_date, state},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
      * Get conflict document pairs
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflict-document-pair
      */
@@ -282,24 +205,6 @@ export class KMAudit {
                 method: 'POST',
                 headers: this.headers,
                 data: {limit, offset, document_name, state, order: sortOrder}
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Get duplicate document pairs
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicate-document-pair
-     */
-    public async getDuplicateDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string): Promise<any[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicate-document-pair`,
-                method: 'POST',
-                headers: this.headers,
-                data: {limit, offset, document_name, state}
             });
             return request.data.response;
         } catch (err) {
@@ -326,78 +231,6 @@ export class KMAudit {
     }
 
     /**
-     * Get duplicates by document pair
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicates-by-document-id-pair
-     */
-    public async getDuplicatesByDocumentPair(document_ids: string[], limit: number = 200, offset: number = 0): Promise<Anomaly[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicates-by-document-id-pair`,
-                method: 'POST',
-                headers: this.headers,
-                data: {document_ids, limit, offset},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * List missing information
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-list-missing-information
-     */
-    public async listMissingInformation(limit: number = 200, offset: number = 0): Promise<any[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/list-missing-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {limit, offset},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Delete missing information
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-delete-missing-information
-     */
-    public async deleteMissingInformation(id: string): Promise<boolean> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/delete-missing-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {id},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Count missing information
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-missing-information
-     */
-    public async countMissingInformation(): Promise<number> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-missing-information`,
-                method: 'POST',
-                headers: this.headers,
-                data: {},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
      * Count conflicts per subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-conflict-by-subject
      */
@@ -407,9 +240,7 @@ export class KMAudit {
                 url: `${this.baseUrl}api/audit/count-conflict-by-subject`,
                 method: 'POST',
                 headers: this.headers,
-                data: {
-                    document_ids: document_ids
-                },
+                data: {document_ids},
             });
             return request.data.response.map((item: any) => ({
                 subject: item.subject,
@@ -426,36 +257,6 @@ export class KMAudit {
     }
 
     /**
-     * Count duplicates per subject
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-count-duplicate-by-subject
-     */
-    public async countDuplicatesPerSubject(document_ids?: string[]): Promise<AnomalyTypeNumber[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicate-by-subject`,
-                method: 'POST',
-                headers: this.headers,
-                data: {
-                    document_ids: document_ids || [],
-                },
-            });
-            const convertedData = request.data.response.map((item: any) => ({
-                subject: item.subject,
-                count: parseInt(item.count),
-                count_detected: parseInt(item.count_detected),
-                count_managed: parseInt(item.count_managed),
-                count_ignored: parseInt(item.count_ignored),
-                count_redetected: parseInt(item.count_redetected),
-                count_disappeared: parseInt(item.count_disappeared),
-            }));
-
-            return convertedData;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
      * Get conflicts by subject
      * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-conflict-information-by-subject
      */
@@ -463,24 +264,6 @@ export class KMAudit {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/get-conflict-information-by-subject`,
-                method: 'POST',
-                headers: this.headers,
-                data: {subject, offset, limit},
-            });
-            return request.data.response;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Get duplicates by subject
-     * documentation: https://k-ai.gitbook.io/knowledge-ai/api/api-presentation/audit#post-get-duplicate-information-by-subject
-     */
-    public async getDuplicatesBySubject(subject?: string, offset: number = 0, limit: number = 50): Promise<Anomaly[]> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/get-duplicate-information-by-subject`,
                 method: 'POST',
                 headers: this.headers,
                 data: {subject, offset, limit},
@@ -510,29 +293,12 @@ export class KMAudit {
     }
 
     /**
-     * Count conflicts by list of document id
+     * Count conflicts by list of document ids
      */
     public async countConflictsByDocumentId(document_ids: string[], state?: AnomalyState): Promise<number> {
         try {
             const request = await axios({
                 url: `${this.baseUrl}api/audit/count-conflict-by-document-ids`,
-                method: 'POST',
-                headers: this.headers,
-                data: {document_ids, state},
-            });
-            return parseInt(request.data.response);
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    /**
-     * Count duplicates by list of document id
-     */
-    public async countDuplicatesByDocumentId(document_ids: string[], state?: AnomalyState): Promise<number> {
-        try {
-            const request = await axios({
-                url: `${this.baseUrl}api/audit/count-duplicate-by-document-ids`,
                 method: 'POST',
                 headers: this.headers,
                 data: {document_ids, state},
