@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, isAxiosError } from 'axios';
 
 export interface RetryOptions {
   maxRetries?: number;
@@ -21,9 +21,12 @@ export class HttpClient {
       try {
         const response = await this.instance.post(endpoint, data);
         return response.data.response as T;
-      } catch (err: any) {
-        const isServerError = !err.response || err.response.status >= 500;
-        if (!isServerError || attempt === this.maxRetries) {
+      } catch (err: unknown) {
+        const isAxErr = isAxiosError(err);
+        const shouldRetry = isAxErr
+          ? err.response === undefined || err.response.status >= 500
+          : false;
+        if (!shouldRetry || attempt === this.maxRetries) {
           throw err;
         }
         await this.sleep(this.retryDelay * Math.pow(2, attempt));
