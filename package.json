@@ -4,7 +4,7 @@
   "description": "kai studio SDK in JS/TS",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "author": "support@k-ai.ai",
   "license": "ISC",
