@@ -66,7 +66,7 @@ export class KMAudit extends BaseModule {
   }
 
   async countConflictsByState(state: string): Promise<number> {
-    return this.post('api/audit/count-conflicts-by-state', { state });
+    return (await this.post<number>('api/audit/count-conflicts-by-state', { state })) ?? 0;
   }
 
   async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string, sortOrder?: string): Promise<any[]> {
