@@ -51,8 +51,9 @@ export class HttpClient {
         return response.data.response as T;
       } catch (err: unknown) {
         const isAxErr = (err as any)?.isAxiosError === true;
+        const retryableStatus = new Set([502, 503, 504]);
         const shouldRetry = isAxErr
-          ? (err as any).response === undefined || (err as any).response.status >= 500
+          ? (err as any).response === undefined || retryableStatus.has((err as any).response?.status)
           : false;
         if (!shouldRetry || attempt === this.maxRetries) {
           throw err;

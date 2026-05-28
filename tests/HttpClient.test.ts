@@ -39,8 +39,8 @@ describe('HttpClient', () => {
 
   // ── retry behaviour ───────────────────────────────────────────────────────
 
-  it('retries on 5xx and eventually throws', async () => {
-    const error = makeAxiosError(500);
+  it('retries on 502/503/504 and eventually throws', async () => {
+    const error = makeAxiosError(503);
     const mockRequest = jest.fn().mockRejectedValue(error);
     mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
@@ -48,6 +48,17 @@ describe('HttpClient', () => {
 
     await expect(client.post('api/test', {})).rejects.toEqual(error);
     expect(mockRequest).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not retry on 500 (server bug, not transient)', async () => {
+    const error = makeAxiosError(500);
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 3, retryDelay: 10 });
+
+    await expect(client.post('api/test', {})).rejects.toEqual(error);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
   });
 
   it('does not retry on 4xx', async () => {
@@ -97,7 +108,7 @@ describe('HttpClient', () => {
   it('uses default maxRetries=3 and retryDelay=1000 when not specified', async () => {
     jest.spyOn(global, 'setTimeout').mockImplementation((fn: any) => { fn(); return 0 as any; });
 
-    const error = makeAxiosError(500);
+    const error = makeAxiosError(503);
     const mockRequest = jest.fn().mockRejectedValue(error);
     mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
@@ -109,7 +120,7 @@ describe('HttpClient', () => {
   });
 
   it('does not retry when maxRetries is 0', async () => {
-    const error = makeAxiosError(500);
+    const error = makeAxiosError(503);
     const mockRequest = jest.fn().mockRejectedValue(error);
     mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
@@ -199,7 +210,7 @@ describe('HttpClient', () => {
     );
   });
 
-  it('new verbs retry on 5xx the same as POST', async () => {
+  it('new verbs retry on 502/503/504 the same as POST', async () => {
     const error = makeAxiosError(503);
     const mockRequest = jest.fn().mockRejectedValue(error);
     mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
