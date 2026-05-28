@@ -1,7 +1,7 @@
 {
   "name": "kai-instance-api-sdk-js",
-  "version": "20250912.2.0",
-  "description": "kai studio SDK in JS/TS",
+  "version": "20260528.1.0",
+  "description": "TypeScript SDK for the Kai Instance API",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -9,13 +9,13 @@
   "author": "support@k-ai.ai",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "jest": "^30.4.2",
-    "ts-jest": "^29.4.11"
+    "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
