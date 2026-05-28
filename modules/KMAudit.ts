@@ -1,5 +1,4 @@
 import { BaseModule } from './BaseModule';
-import { RetryOptions } from './HttpClient';
 
 export enum AnomalyState {
   MANAGED = 'managed',
@@ -37,10 +36,6 @@ export interface AnomalyTypeNumber {
 }
 
 export class KMAudit extends BaseModule {
-  constructor(headers: Record<string, string>, baseUrl: string, retryOptions?: RetryOptions) {
-    super(headers, baseUrl, retryOptions);
-  }
-
   async updateConflictState(id: string, state: AnomalyState): Promise<boolean> {
     return this.post('api/audit/conflict-information/set-state', { id, state });
   }

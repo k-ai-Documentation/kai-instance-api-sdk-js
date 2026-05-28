@@ -1,5 +1,4 @@
 import { BaseModule } from './BaseModule';
-import { RetryOptions } from './HttpClient';
 
 export interface PartialDocument {
   id: string;
@@ -29,12 +28,8 @@ export interface SemanticNode {
 }
 
 export class SemanticGraph extends BaseModule {
-  constructor(headers: Record<string, string>, baseUrl: string, retryOptions?: RetryOptions) {
-    super(headers, baseUrl, retryOptions);
-  }
-
   async getNodes(limit: number = 20, offset: number = 0): Promise<SemanticNode[]> {
-    return this.post('api/semantic-graph/nodes', { limit: limit || 20, offset: offset || 0 });
+    return this.post('api/semantic-graph/nodes', { limit, offset });
   }
 
   async getNodeByLabel(label: string): Promise<SemanticNode[]> {

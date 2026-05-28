@@ -1,11 +1,6 @@
 import { BaseModule } from './BaseModule';
-import { RetryOptions } from './HttpClient';
 
 export class Orchestrator extends BaseModule {
-  constructor(headers: Record<string, string>, baseUrl: string, retryOptions?: RetryOptions) {
-    super(headers, baseUrl, retryOptions);
-  }
-
   async launchPartialIndexation(): Promise<boolean> {
     return this.post('api/orchestrator/differential-indexation', {});
   }

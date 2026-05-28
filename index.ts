@@ -46,6 +46,7 @@ export class KaiInstanceApi {
   private buildHeaders(credentials: KaiStudioCredentials): Record<string, string> {
     const headers: Record<string, string> = {};
 
+    // Each credential is sent independently — callers provide only what they have
     if (credentials.instanceId) headers['instance-id'] = credentials.instanceId;
     if (credentials.apiKey) headers['api-key'] = credentials.apiKey;
     if (credentials.Authorization) headers['Authorization'] = credentials.Authorization;

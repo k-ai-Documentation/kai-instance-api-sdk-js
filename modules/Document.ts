@@ -1,5 +1,4 @@
 import { BaseModule } from './BaseModule';
-import { RetryOptions } from './HttpClient';
 
 export interface DocumentSignatureExtraproperties {
   audit_done: boolean;
@@ -18,10 +17,6 @@ export interface DocumentSignature {
 }
 
 export class Document extends BaseModule {
-  constructor(headers: Record<string, string>, baseUrl: string, retryOptions?: RetryOptions) {
-    super(headers, baseUrl, retryOptions);
-  }
-
   async listDocuments(offset: number = 0, limit: number = 20, state?: string): Promise<DocumentSignature[]> {
     return this.post('api/document/list-docs', { offset, limit, state });
   }
