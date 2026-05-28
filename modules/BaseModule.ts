@@ -7,7 +7,23 @@ export abstract class BaseModule {
     this.http = new HttpClient(headers, baseUrl, retryOptions);
   }
 
-  protected post<T>(endpoint: string, data: object = {}): Promise<T> {
+  protected get<T>(endpoint: string, data?: object): Promise<T> {
+    return this.http.get<T>(endpoint, data);
+  }
+
+  protected post<T>(endpoint: string, data?: object): Promise<T> {
     return this.http.post<T>(endpoint, data);
+  }
+
+  protected put<T>(endpoint: string, data?: object): Promise<T> {
+    return this.http.put<T>(endpoint, data);
+  }
+
+  protected patch<T>(endpoint: string, data?: object): Promise<T> {
+    return this.http.patch<T>(endpoint, data);
+  }
+
+  protected delete<T>(endpoint: string, data?: object): Promise<T> {
+    return this.http.delete<T>(endpoint, data);
   }
 }

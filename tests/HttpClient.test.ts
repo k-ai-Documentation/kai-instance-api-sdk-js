@@ -4,74 +4,75 @@ import { HttpClient } from '../modules/HttpClient';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-function makeMockInstance(postFn: jest.Mock) {
-  return { post: postFn } as any;
+function makeMockInstance(requestFn: jest.Mock) {
+  return { request: requestFn } as any;
 }
 
-function makeAxiosError(status: number | undefined, message: string = 'Error') {
-  const err = new Error(message) as any;
-  err.isAxiosError = true;
-  if (status !== undefined) {
-    err.response = { status };
-  }
-  return err;
+function makeAxiosError(status?: number) {
+  return {
+    isAxiosError: true,
+    response: status !== undefined ? { status } : undefined,
+    message: status !== undefined ? `Request failed with status ${status}` : 'Network Error',
+  };
 }
 
 describe('HttpClient', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock isAxiosError to recognize our test error objects
-    (mockedAxios.isAxiosError as any) = jest.fn((err: any) => {
-      return err && err.isAxiosError === true;
-    });
   });
 
+  // ── success path ──────────────────────────────────────────────────────────
+
   it('returns response.data.response on success', async () => {
-    const mockPost = jest.fn().mockResolvedValueOnce({ data: { response: 'ok' } });
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: 'ok' } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/');
     const result = await client.post('api/test', {});
 
     expect(result).toBe('ok');
-    expect(mockPost).toHaveBeenCalledTimes(1);
-    expect(mockPost).toHaveBeenCalledWith('api/test', {});
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'POST', url: 'api/test', data: {} })
+    );
   });
+
+  // ── retry behaviour ───────────────────────────────────────────────────────
 
   it('retries on 5xx and eventually throws', async () => {
     const error = makeAxiosError(500);
-    const mockPost = jest.fn().mockRejectedValue(error);
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 2, retryDelay: 10 });
 
     await expect(client.post('api/test', {})).rejects.toEqual(error);
-    expect(mockPost).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
+    expect(mockRequest).toHaveBeenCalledTimes(3);
   });
 
   it('does not retry on 4xx', async () => {
     const error = makeAxiosError(404);
-    const mockPost = jest.fn().mockRejectedValue(error);
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 3, retryDelay: 10 });
 
     await expect(client.post('api/test', {})).rejects.toEqual(error);
-    expect(mockPost).toHaveBeenCalledTimes(1);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
   });
 
   it('retries on network error (no response) and recovers', async () => {
-    const networkError = makeAxiosError(undefined, 'Network Error');
-    const mockPost = jest.fn()
+    const networkError = makeAxiosError();
+    const mockRequest = jest.fn()
       .mockRejectedValueOnce(networkError)
       .mockResolvedValueOnce({ data: { response: 'recovered' } });
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 2, retryDelay: 10 });
     const result = await client.post('api/test', {});
 
     expect(result).toBe('recovered');
-    expect(mockPost).toHaveBeenCalledTimes(2);
+    expect(mockRequest).toHaveBeenCalledTimes(2);
   });
 
   it('uses exponential backoff between retries', async () => {
@@ -83,13 +84,13 @@ describe('HttpClient', () => {
     });
 
     const error = makeAxiosError(503);
-    const mockPost = jest.fn().mockRejectedValue(error);
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 3, retryDelay: 1000 });
     await expect(client.post('api/test', {})).rejects.toEqual(error);
 
-    expect(delays).toEqual([1000, 2000, 4000]); // 1000*2^0, 1000*2^1, 1000*2^2
+    expect(delays).toEqual([1000, 2000, 4000]);
     jest.restoreAllMocks();
   });
 
@@ -97,23 +98,115 @@ describe('HttpClient', () => {
     jest.spyOn(global, 'setTimeout').mockImplementation((fn: any) => { fn(); return 0 as any; });
 
     const error = makeAxiosError(500);
-    const mockPost = jest.fn().mockRejectedValue(error);
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/');
     await expect(client.post('api/test', {})).rejects.toEqual(error);
 
-    expect(mockPost).toHaveBeenCalledTimes(4); // 1 initial + 3 retries
+    expect(mockRequest).toHaveBeenCalledTimes(4);
     jest.restoreAllMocks();
   });
 
   it('does not retry when maxRetries is 0', async () => {
     const error = makeAxiosError(500);
-    const mockPost = jest.fn().mockRejectedValue(error);
-    mockedAxios.create.mockReturnValue(makeMockInstance(mockPost));
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
 
     const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 0, retryDelay: 10 });
     await expect(client.post('api/test', {})).rejects.toEqual(error);
-    expect(mockPost).toHaveBeenCalledTimes(1);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
+
+  // ── HTTP verbs ────────────────────────────────────────────────────────────
+
+  it('GET sends data as query params', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: 'ok' } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    const result = await client.get('api/test', { search: 'foo' });
+
+    expect(result).toBe('ok');
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'GET', url: 'api/test', params: { search: 'foo' } })
+    );
+  });
+
+  it('GET with no data sends no params', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: 'ok' } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    await client.get('api/test');
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'GET', url: 'api/test' })
+    );
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.not.objectContaining({ params: expect.anything() })
+    );
+  });
+
+  it('PUT sends data as request body', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: true } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    await client.put('api/test', { name: 'updated' });
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'PUT', url: 'api/test', data: { name: 'updated' } })
+    );
+  });
+
+  it('PATCH sends data as request body', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: true } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    await client.patch('api/test', { field: 'value' });
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'PATCH', url: 'api/test', data: { field: 'value' } })
+    );
+  });
+
+  it('DELETE sends data as request body', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: true } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    await client.delete('api/test', { id: '123' });
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE', url: 'api/test', data: { id: '123' } })
+    );
+  });
+
+  it('DELETE with no data sends no body', async () => {
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: { response: true } });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    await client.delete('api/test');
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'DELETE', url: 'api/test' })
+    );
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.not.objectContaining({ data: expect.anything() })
+    );
+  });
+
+  it('new verbs retry on 5xx the same as POST', async () => {
+    const error = makeAxiosError(503);
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 1, retryDelay: 10 });
+
+    await expect(client.get('api/test')).rejects.toEqual(error);
+    expect(mockRequest).toHaveBeenCalledTimes(2);
   });
 });
