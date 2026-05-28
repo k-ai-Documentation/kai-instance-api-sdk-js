@@ -1,100 +1,81 @@
-import {KMAudit} from "./modules/KMAudit";
-import {SemanticGraph} from "./modules/SemanticGraph";
-import {Orchestrator} from "./modules/Orchestrator";
-import {Document} from "./modules/Document";
+import { KMAudit } from './modules/KMAudit';
+import { SemanticGraph } from './modules/SemanticGraph';
+import { Orchestrator } from './modules/Orchestrator';
+import { Document } from './modules/Document';
+import { RetryOptions } from './modules/HttpClient';
+
+export { RetryOptions } from './modules/HttpClient';
 
 export interface KaiStudioCredentials {
-    instanceId?: any,
-    apiKey?: any,
-    host?: any,
-    Authorization?: string,
-    apiHost?: string,
+  instanceId?: string;
+  apiKey?: string;
+  host?: string;
+  Authorization?: string;
+  apiHost?: string;
 }
 
 export enum State {
-    INITIAL_SAVED = 'INITIAL_SAVED',
-    UPDATED = "UPDATED",
-    ON_CONTENT_EXTRACT = 'ON_CONTENT_EXTRACT',
-    CONTENT_EXTRACTED = 'CONTENT_EXTRACTED',
-    ON_INDEXATION = 'ON_INDEXATION',
-    INDEXED = 'INDEXED',
-    PARSING_ERROR = 'PARSING_ERROR'
+  INITIAL_SAVED = 'INITIAL_SAVED',
+  UPDATED = 'UPDATED',
+  ON_CONTENT_EXTRACT = 'ON_CONTENT_EXTRACT',
+  CONTENT_EXTRACTED = 'CONTENT_EXTRACTED',
+  ON_INDEXATION = 'ON_INDEXATION',
+  INDEXED = 'INDEXED',
+  PARSING_ERROR = 'PARSING_ERROR'
 }
 
 export class KaiInstanceApi {
+  private credentials: KaiStudioCredentials;
+  private _auditInstance: KMAudit;
+  private _semanticGraph: SemanticGraph;
+  private _orchestrator: Orchestrator;
+  private _document: Document;
 
-    private credentials: KaiStudioCredentials;
-    private _auditInstance: KMAudit;
-    private _semanticGraph: SemanticGraph;
-    private _orchestrator: Orchestrator;
-    private _document: Document;
+  constructor(credentials: KaiStudioCredentials, retryOptions?: RetryOptions) {
+    this.credentials = credentials;
 
-    constructor(credentials: KaiStudioCredentials) {
-        this.credentials = credentials;
+    const headers = this.buildHeaders(credentials);
+    const baseUrl = this.resolveBaseUrl(credentials);
 
-        const headers = this.buildHeaders(credentials);
-        const baseUrl = this.resolveBaseUrl(credentials);
+    this._auditInstance = new KMAudit(headers, baseUrl, retryOptions);
+    this._semanticGraph = new SemanticGraph(headers, baseUrl, retryOptions);
+    this._orchestrator = new Orchestrator(headers, baseUrl, retryOptions);
+    this._document = new Document(headers, baseUrl, retryOptions);
+  }
 
-        this._auditInstance = new KMAudit(headers, baseUrl);
-        this._semanticGraph = new SemanticGraph(headers, baseUrl);
-        this._orchestrator = new Orchestrator(headers, baseUrl);
-        this._document = new Document(headers, baseUrl);
-    }
+  private buildHeaders(credentials: KaiStudioCredentials): Record<string, string> {
+    const headers: Record<string, string> = {};
 
-    private buildHeaders(credentials: KaiStudioCredentials): Record<string, string> {
-        const headers: Record<string, string> = {};
+    if (credentials.instanceId) headers['instance-id'] = credentials.instanceId;
+    if (credentials.apiKey) headers['api-key'] = credentials.apiKey;
+    if (credentials.Authorization) headers['Authorization'] = credentials.Authorization;
+    if (credentials.apiHost) headers['api-host'] = credentials.apiHost;
 
-        if (credentials.instanceId && credentials.apiKey) {
-            headers["instance-id"] = credentials.instanceId;
-            headers["api-key"] = credentials.apiKey;
+    return headers;
+  }
 
-            if (credentials.Authorization) {
-                headers["Authorization"] = credentials.Authorization;
-            }
-        }
+  private resolveBaseUrl(credentials: KaiStudioCredentials): string {
+    if (credentials.host) return credentials.host;
+    return 'https://api.kai-studio.ai/';
+  }
 
-        if (credentials.host) {
-            if (credentials.apiKey) headers["api-key"] = credentials.apiKey;
-            if (credentials.instanceId) headers["instance-id"] = credentials.instanceId;
-        }
+  public getCredentials(): KaiStudioCredentials {
+    return this.credentials;
+  }
 
-        if (credentials.apiHost) {
-            headers["api-host"] = credentials.apiHost;
-        }
+  public auditInstance(): KMAudit {
+    return this._auditInstance;
+  }
 
-        return headers;
-    }
+  public semanticGraph(): SemanticGraph {
+    return this._semanticGraph;
+  }
 
-    private resolveBaseUrl(credentials: KaiStudioCredentials): string {
-        if (credentials.host) {
-            return credentials.host;
-        }
+  public orchestrator(): Orchestrator {
+    return this._orchestrator;
+  }
 
-        if (typeof import.meta !== "undefined" && import.meta.env.VITE_APP_API_URL) {
-            return import.meta.env.VITE_APP_API_URL;
-        }
-
-        return "https://api.kai-studio.ai/";
-    }
-
-    public getCredentials(): KaiStudioCredentials {
-        return this.credentials
-    }
-
-    public auditInstance(): KMAudit {
-        return this._auditInstance
-    }
-
-    public semanticGraph(): SemanticGraph {
-        return this._semanticGraph
-    }
-
-    public orchestrator(): Orchestrator {
-        return this._orchestrator
-    }
-
-    public document(): Document {
-        return this._document
-    }
+  public document(): Document {
+    return this._document;
+  }
 }
-
