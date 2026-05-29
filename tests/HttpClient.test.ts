@@ -220,4 +220,22 @@ describe('HttpClient', () => {
     await expect(client.get('api/test')).rejects.toEqual(error);
     expect(mockRequest).toHaveBeenCalledTimes(2);
   });
+
+  // ── timeout ───────────────────────────────────────────────────────────────
+
+  it('passes custom timeout to axios.create', () => {
+    mockedAxios.create.mockReturnValue(makeMockInstance(jest.fn()));
+    new HttpClient({}, 'https://api.example.com/', { timeout: 5000 });
+    expect(mockedAxios.create).toHaveBeenCalledWith(
+      expect.objectContaining({ timeout: 5000 })
+    );
+  });
+
+  it('uses default timeout of 30000ms when not specified', () => {
+    mockedAxios.create.mockReturnValue(makeMockInstance(jest.fn()));
+    new HttpClient({}, 'https://api.example.com/');
+    expect(mockedAxios.create).toHaveBeenCalledWith(
+      expect.objectContaining({ timeout: 30000 })
+    );
+  });
 });

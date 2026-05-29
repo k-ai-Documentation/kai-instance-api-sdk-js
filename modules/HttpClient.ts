@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 export interface RetryOptions {
   maxRetries?: number;
   retryDelay?: number;
+  timeout?: number;
 }
 
 export class HttpClient {
@@ -13,7 +14,11 @@ export class HttpClient {
   constructor(headers: Record<string, string>, baseUrl: string, retryOptions?: RetryOptions) {
     this.maxRetries = retryOptions?.maxRetries ?? 3;
     this.retryDelay = retryOptions?.retryDelay ?? 1000;
-    this.instance = axios.create({ baseURL: baseUrl, headers });
+    this.instance = axios.create({
+      baseURL: baseUrl,
+      headers,
+      timeout: retryOptions?.timeout ?? 30000,
+    });
   }
 
   get<T>(endpoint: string, data?: object): Promise<T> {
