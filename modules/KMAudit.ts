@@ -76,12 +76,12 @@ export class KMAudit extends BaseModule {
     const raw: any[] = await this.post('api/audit/count-conflict-by-subject', { document_ids });
     return raw.map(item => ({
       subject: item.subject,
-      count: parseInt(item.count),
-      count_detected: parseInt(item.count_detected),
-      count_managed: parseInt(item.count_managed),
-      count_ignored: parseInt(item.count_ignored),
-      count_redetected: parseInt(item.count_redetected),
-      count_disappeared: parseInt(item.count_disappeared),
+      count: parseInt(item.count, 10),
+      count_detected: parseInt(item.count_detected, 10),
+      count_managed: parseInt(item.count_managed, 10),
+      count_ignored: parseInt(item.count_ignored, 10),
+      count_redetected: parseInt(item.count_redetected, 10),
+      count_disappeared: parseInt(item.count_disappeared, 10),
     }));
   }
 
@@ -95,6 +95,6 @@ export class KMAudit extends BaseModule {
 
   async countConflictsByDocumentId(document_ids: string[], state?: AnomalyState): Promise<number> {
     const raw: string = await this.post('api/audit/count-conflict-by-document-ids', { document_ids, state });
-    return parseInt(raw);
+    return parseInt(raw, 10);
   }
 }
