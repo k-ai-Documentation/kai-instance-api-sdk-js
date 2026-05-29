@@ -4,7 +4,16 @@ TypeScript/JavaScript SDK for the Kai Studio API.
 
 ## Installation
 
+Clone or download the repository, then build and install:
+
 ```bash
+# 1. Install dependencies and compile
+cd kai-instance-api-sdk-js
+npm install
+npm run build
+
+# 2. Install into your project
+cd your-project
 npm install file:path/to/kai-instance-api-sdk-js --save
 ```
 

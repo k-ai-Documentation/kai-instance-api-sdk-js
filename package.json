@@ -1,10 +1,33 @@
 {
   "name": "kai-instance-api-sdk-js",
   "version": "20260529.1.0",
-  "description": "TypeScript SDK for the Kai Instance API",
-  "main": "index.js",
+  "description": "TypeScript SDK for the Kai Studio API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "test": "jest"
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/k-ai-Documentation/kai-instance-api-sdk-js.git"
+  },
+  "keywords": [
+    "kai",
+    "kai-studio",
+    "knowledge-management",
+    "semantic-graph",
+    "typescript",
+    "sdk"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
   },
   "author": "support@k-ai.ai",
   "license": "ISC",
