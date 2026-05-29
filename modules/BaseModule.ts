@@ -26,4 +26,8 @@ export abstract class BaseModule {
   protected delete<T>(endpoint: string, data?: object): Promise<T> {
     return this.http.delete<T>(endpoint, data);
   }
+
+  protected download(endpoint: string, data?: object): Promise<Buffer> {
+    return this.http.download(endpoint, data);
+  }
 }

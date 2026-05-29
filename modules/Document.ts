@@ -5,7 +5,6 @@ export interface DocumentSignatureExtraproperties {
   kb_signature: Record<string, string>;
   kai_internal_state: string;
   kai_internal_count_chunks: number;
-  [key: string]: any;
 }
 
 export interface DocumentSignature {
@@ -13,7 +12,6 @@ export interface DocumentSignature {
   name: string;
   url?: string;
   extraproperties: DocumentSignatureExtraproperties;
-  [key: string]: any;
 }
 
 export class Document extends BaseModule {
@@ -26,14 +24,14 @@ export class Document extends BaseModule {
   }
 
   async countDocuments(state?: string, documentIds?: string[]): Promise<number> {
-    const payload: Record<string, any> = {};
+    const payload: Record<string, unknown> = {};
     if (state !== undefined) payload.state = state;
     if (documentIds) payload.document_ids = documentIds;
     return this.post('api/document/count-documents', payload);
   }
 
-  async downloadFile(documentId: string): Promise<any> {
-    return this.post('api/document/download', { id: documentId });
+  async downloadFile(documentId: string): Promise<Buffer> {
+    return this.download('api/document/download', { id: documentId });
   }
 
   async docsByIds(ids: string[], offset: number = 0, limit: number = 20): Promise<DocumentSignature[]> {
