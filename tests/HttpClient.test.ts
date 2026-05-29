@@ -238,4 +238,51 @@ describe('HttpClient', () => {
       expect.objectContaining({ timeout: 30000 })
     );
   });
+
+  // ── download ──────────────────────────────────────────────────────────────
+
+  it('download() returns response.data directly (not response.data.response)', async () => {
+    const buffer = Buffer.from('binary content');
+    const mockRequest = jest.fn().mockResolvedValueOnce({ data: buffer });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/');
+    const result = await client.download('api/document/download', { id: 'doc-123' });
+
+    expect(result).toBe(buffer);
+    expect(mockRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        method: 'POST',
+        url: 'api/document/download',
+        responseType: 'arraybuffer',
+        data: { id: 'doc-123' },
+      })
+    );
+  });
+
+  it('download() retries on 503 and recovers', async () => {
+    const error = makeAxiosError(503);
+    const buffer = Buffer.from('ok');
+    const mockRequest = jest.fn()
+      .mockRejectedValueOnce(error)
+      .mockResolvedValueOnce({ data: buffer });
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 1, retryDelay: 10 });
+    const result = await client.download('api/document/download', { id: 'doc-123' });
+
+    expect(result).toBe(buffer);
+    expect(mockRequest).toHaveBeenCalledTimes(2);
+  });
+
+  it('download() does not retry on 4xx', async () => {
+    const error = makeAxiosError(404);
+    const mockRequest = jest.fn().mockRejectedValue(error);
+    mockedAxios.create.mockReturnValue(makeMockInstance(mockRequest));
+
+    const client = new HttpClient({}, 'https://api.example.com/', { maxRetries: 2, retryDelay: 10 });
+
+    await expect(client.download('api/document/download', {})).rejects.toEqual(error);
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
 });

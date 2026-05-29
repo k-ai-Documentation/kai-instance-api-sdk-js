@@ -41,28 +41,41 @@ export class HttpClient {
     return this.execute<T>('DELETE', endpoint, data);
   }
 
-  private async execute<T>(method: string, endpoint: string, data?: object): Promise<T> {
+  private execute<T>(method: string, endpoint: string, data?: object): Promise<T> {
+    return this.withRetry(async () => {
+      const config: Record<string, unknown> = { method, url: endpoint };
+      if (data !== undefined) {
+        config[method === 'GET' ? 'params' : 'data'] = data;
+      }
+      const response = await this.instance.request(config);
+      return response.data.response as T;
+    });
+  }
+
+  async download(endpoint: string, data?: object): Promise<Buffer> {
+    return this.withRetry(async () => {
+      const config: Record<string, unknown> = {
+        method: 'POST',
+        url: endpoint,
+        responseType: 'arraybuffer',
+      };
+      if (data !== undefined) config.data = data;
+      const response = await this.instance.request(config);
+      return response.data as Buffer;
+    });
+  }
+
+  private async withRetry<T>(fn: () => Promise<T>): Promise<T> {
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
-        const config: Record<string, unknown> = { method, url: endpoint };
-        if (data !== undefined) {
-          if (method === 'GET') {
-            config.params = data;
-          } else {
-            config.data = data;
-          }
-        }
-        const response = await this.instance.request(config);
-        return response.data.response as T;
+        return await fn();
       } catch (err: unknown) {
         const isAxErr = (err as any)?.isAxiosError === true;
         const retryableStatus = new Set([502, 503, 504]);
         const shouldRetry = isAxErr
           ? (err as any).response === undefined || retryableStatus.has((err as any).response?.status)
           : false;
-        if (!shouldRetry || attempt === this.maxRetries) {
-          throw err;
-        }
+        if (!shouldRetry || attempt === this.maxRetries) throw err;
         await this.sleep(this.retryDelay * Math.pow(2, attempt));
       }
     }
