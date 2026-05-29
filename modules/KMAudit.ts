@@ -16,13 +16,20 @@ export interface AnomalyInformationDocument {
 export interface Anomaly {
   id: string;
   subject: string;
-  state: string;
+  state: AnomalyState;
   documents: AnomalyInformationDocument[];
   explanation: string;
 }
 
 export interface DocumentAnomalies {
   conflicts: Anomaly[];
+}
+
+export interface ConflictDocumentPair {
+  // IMPORTANT: Verify these field names against actual API response before shipping
+  document_ids: string[];
+  conflict_count: number;
+  state: string;
 }
 
 export interface AnomalyTypeNumber {
@@ -64,7 +71,7 @@ export class KMAudit extends BaseModule {
     return (await this.post<number>('api/audit/count-conflicts-by-state', { state })) ?? 0;
   }
 
-  async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string, sortOrder?: string): Promise<any[]> {
+  async getConflictDocumentPairs(limit: number = 200, offset: number = 0, document_name?: string, state?: string, sortOrder?: string): Promise<ConflictDocumentPair[]> {
     return this.post('api/audit/get-conflict-document-pair', { limit, offset, document_name, state, order: sortOrder });
   }
 
