@@ -26,18 +26,26 @@ const api = new KaiInstanceApi({
 });
 ```
 
-## Retry Configuration
+Either `instanceId` (SaaS) or `host` (Premise) must be provided — the constructor throws immediately if neither is present.
 
-By default the SDK retries failed requests up to 3 times with exponential backoff (1s → 2s → 4s). Retries apply to network errors and HTTP 5xx responses only.
+## Retry & Timeout Configuration
+
+By default the SDK retries failed requests up to 3 times with exponential backoff (1s → 2s → 4s). Retries apply to network errors and HTTP 502/503/504 responses only. Requests time out after 30 seconds by default.
 
 Override the defaults via the optional second constructor argument:
 
 ```typescript
 const api = new KaiInstanceApi(
   { instanceId: 'YOUR_INSTANCE_ID', apiKey: 'YOUR_API_KEY' },
-  { maxRetries: 5, retryDelay: 500 }
+  { maxRetries: 5, retryDelay: 500, timeout: 60000 }
 );
 ```
+
+| Option | Default | Description |
+|---|---|---|
+| `maxRetries` | `3` | Number of retry attempts after the initial request |
+| `retryDelay` | `1000` | Base delay in ms; doubles each attempt (exponential backoff) |
+| `timeout` | `30000` | Request timeout in ms; throws on exceeded |
 
 ## Modules
 
@@ -59,7 +67,7 @@ There are two deployment modes (SaaS and Premise) and four modules:
 - `listDocuments(offset?, limit?, state?)` — list documents; optional state filter
 - `getDocumentDetail(id)` — fetch one document by ID
 - `countDocuments(state?, documentIds?)` — count documents; optional filters
-- `downloadFile(documentId)` — download raw file content by ID
+- `downloadFile(documentId)` — download raw file content by ID; returns `Promise<Buffer>`
 - `docsByIds(ids, offset?, limit?)` — fetch multiple documents by ID array
 
 ```typescript
