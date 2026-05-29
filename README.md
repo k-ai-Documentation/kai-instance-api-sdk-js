@@ -26,7 +26,6 @@ const api = new KaiInstanceApi({
 });
 ```
 
-Either `instanceId` (SaaS) or `host` (Premise) must be provided — the constructor throws immediately if neither is present.
 
 ## Retry & Timeout Configuration
 

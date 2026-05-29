@@ -32,12 +32,6 @@ export class KaiInstanceApi {
   private _document: Document;
 
   constructor(credentials: KaiStudioCredentials, retryOptions?: RetryOptions) {
-    if (!credentials.instanceId && !credentials.host) {
-      throw new Error(
-        'KaiInstanceApi requires either instanceId (SaaS mode) or host (Premise mode)'
-      );
-    }
-
     this.credentials = credentials;
 
     const headers = this.buildHeaders(credentials);

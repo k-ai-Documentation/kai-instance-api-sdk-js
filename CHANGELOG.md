@@ -8,7 +8,6 @@ All notable changes to `kai-instance-api-sdk-js` are documented here.
 
 ### Added
 - **Request timeout** — `RetryOptions` now accepts `timeout?: number` (default 30 000 ms). Requests that exceed the timeout throw immediately rather than hanging indefinitely.
-- **Credential validation** — `KaiInstanceApi` constructor throws a clear error if neither `instanceId` (SaaS) nor `host` (Premise) is provided, instead of silently making unauthenticated requests.
 - **Module-level test suite** — unit tests covering endpoint strings, payload shapes, and response mappings for all four modules (`KMAudit`, `Document`, `Orchestrator`, `SemanticGraph`).
 
 ### Fixed
