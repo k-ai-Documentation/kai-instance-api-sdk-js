@@ -54,20 +54,14 @@ No breaking change — existing callers get a 30 s default they never had before
 - Returns `response.data` (raw buffer — no `.response` unwrap)
 - Still goes through the full retry loop
 
+Rather than duplicating the retry loop, extract a private `withRetry<T>()` helper that both `execute()` and `download()` share:
+
 ```typescript
-async download(endpoint: string, data?: object): Promise<Buffer> {
+private async withRetry<T>(fn: () => Promise<T>): Promise<T> {
   for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
     try {
-      const config: Record<string, unknown> = {
-        method: 'POST',
-        url: endpoint,
-        responseType: 'arraybuffer',
-      };
-      if (data !== undefined) config.data = data;
-      const response = await this.instance.request(config);
-      return response.data as Buffer;
+      return await fn();
     } catch (err: unknown) {
-      // same retry logic as execute()
       const isAxErr = (err as any)?.isAxiosError === true;
       const retryableStatus = new Set([502, 503, 504]);
       const shouldRetry = isAxErr
@@ -79,7 +73,33 @@ async download(endpoint: string, data?: object): Promise<Buffer> {
   }
   throw new Error('Unexpected end of retry loop');
 }
+
+async execute<T>(method: string, endpoint: string, data?: object): Promise<T> {
+  return this.withRetry(async () => {
+    const config: Record<string, unknown> = { method, url: endpoint };
+    if (data !== undefined) {
+      config[method === 'GET' ? 'params' : 'data'] = data;
+    }
+    const response = await this.instance.request(config);
+    return response.data.response as T;
+  });
+}
+
+async download(endpoint: string, data?: object): Promise<Buffer> {
+  return this.withRetry(async () => {
+    const config: Record<string, unknown> = {
+      method: 'POST',
+      url: endpoint,
+      responseType: 'arraybuffer',
+    };
+    if (data !== undefined) config.data = data;
+    const response = await this.instance.request(config);
+    return response.data as Buffer;
+  });
+}
 ```
+
+This eliminates the duplicated retry loop and keeps the retry policy in one place.
 
 `BaseModule` gets a corresponding protected passthrough:
 
@@ -172,10 +192,11 @@ Same removal for `DocumentSignatureExtraproperties`.
 
 ### `ConflictDocumentPair`
 
-`getConflictDocumentPairs` currently returns `any[]`. Add a typed interface:
+`getConflictDocumentPairs` currently returns `any[]`. Add a typed interface based on the actual API response shape — **field names must be verified against the real API response before implementation**, as the current codebase has no ground truth for this type.
 
 ```typescript
 export interface ConflictDocumentPair {
+  // verify field names against actual API response
   document_ids: string[];
   conflict_count: number;
   state: string;
